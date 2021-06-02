@@ -1,0 +1,32 @@
+.radioItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+/* use :active instead of isPressed in js to avoid adding useButton hook in Radio component */
+.radioItem:active {
+  opacity: 0.85;
+}
+
+.radioCircle {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transform: scale(0.8);
+  transition: transform 200ms;
+}
+
+.radioCircleSelected {
+  transform: scale(1);
+}
+
+.radioLabel {
+  color: var(--text-secondary-color);
+  transition: 500ms;
+}
+
+.radioLabelSelected {
+  color: var(--text-color);
+}

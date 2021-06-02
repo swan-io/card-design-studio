@@ -1,0 +1,8 @@
+.base {
+  padding: 16px;
+  border-radius: 6px;
+  color: var(--text-secondary-color);
+  background-color: var(--light-background);
+  font-size: 16px;
+  line-height: 22px;
+}
