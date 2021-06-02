@@ -3,6 +3,7 @@ import { t } from "../../utils/i18n"
 import { createSwanLogoSvg } from "../../utils/logo"
 import { Box } from "../Box"
 import { Button } from "../Button"
+import { Link } from "../Link"
 import { Slider } from "../Slider"
 import { Space } from "../Space"
 import { StepContainer, StepContainerProps } from "../StepContainer"
@@ -10,6 +11,7 @@ import { SvgDropzone } from "../SvgDropzone"
 import { Text } from "../Text"
 
 const DEFAULT_LOGO_ZOOM = 0.6
+const HELP_URL = "https://docs.swan.io/help/faq/guidelines-card-logo"
 
 type Props = {
   logo: SVGElement | null
@@ -67,7 +69,11 @@ export const Step2Logo: React.FC<Props> = ({
 
       <Space height={24} />
 
-      <Box direction="row" justify="end">
+      <Box direction="row" justify="space-between" align="center">
+        <Link to={HELP_URL}>{t("logo.help")}</Link>
+
+        <Space width={16} />
+
         <Button
           iconName="arrow-right-filled"
           isDisabled={!logo}
