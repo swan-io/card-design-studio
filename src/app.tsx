@@ -56,19 +56,19 @@ const use3dAssets = (): App3dAssets => {
     environmentMap.encoding = sRGBEncoding
 
     const cardTextures = {
-      silver: textureLoader.load("/models/card/color_silver.jpg"),
-      black: textureLoader.load("/models/card/color_black.jpg"),
+      silver: textureLoader.load("models/card/color_silver.jpg"),
+      black: textureLoader.load("models/card/color_black.jpg"),
     }
     // Use sRGBEncoding as GLTF Loader do
     cardTextures.black.encoding = sRGBEncoding
     cardTextures.silver.encoding = sRGBEncoding
 
     let font: Font
-    fontLoader.load("/fonts/MarkPro_Regular.json", loadedFont => {
+    fontLoader.load("fonts/MarkPro_Regular.json", loadedFont => {
       font = loadedFont
     })
     let gltf: GLTF
-    gltfLoader.load("/models/card/card.gltf", loadedGltf => {
+    gltfLoader.load("models/card/card.gltf", loadedGltf => {
       gltf = loadedGltf
     })
 
@@ -168,7 +168,9 @@ export const App: React.FC = () => {
               color={color}
               onChange={value => {
                 match(value)
-                  .with({ field: "name" }, ({ value }) => handleNameChange(value))
+                  .with({ field: "name" }, ({ value }) =>
+                    handleNameChange(value),
+                  )
                   .with({ field: "logo" }, ({ value }) => setLogo(value))
                   .with({ field: "logoScale" }, ({ value }) =>
                     setLogoScale(value),
