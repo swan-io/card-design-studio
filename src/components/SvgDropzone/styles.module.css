@@ -1,0 +1,38 @@
+.base {
+  position: relative;
+  height: 80px;
+  background-color: var(--input-background);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: background-color 300ms;
+}
+.pressed {
+  opacity: 0.7;
+}
+.invalid {
+  background-color: var(--dropzone-error-color);
+}
+.dragging {
+  background-color: var(--dropzone-over-color);
+}
+
+.content {
+  height: 100%;
+  color: var(--text-secondary-color);
+}
+
+.borderSvg {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+}
+
+.border {
+  fill: none;
+  stroke-dasharray: 8;
+  stroke: var(--border-color);
+}
