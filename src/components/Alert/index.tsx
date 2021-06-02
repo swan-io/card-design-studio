@@ -2,7 +2,7 @@ import React from "react"
 import { Box } from "../Box"
 import { Icon } from "../Icon"
 import { Space } from "../Space"
-import styles from './styles.module.css'
+import styles from "./styles.module.css"
 
 type Props = {
   children: string

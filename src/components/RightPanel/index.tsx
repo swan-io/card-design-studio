@@ -3,12 +3,12 @@ import { animated, useTransition } from "react-spring"
 import { t } from "../../utils/i18n"
 import { Box } from "../Box"
 import { Button } from "../Button"
-import { Text } from "../Text"
 import { ColorRadio, ColorsRadioGroup } from "../ColorsRadioGroup"
 import { Fill } from "../Fill"
 import { Slider } from "../Slider"
 import { Space } from "../Space"
 import { SvgDropzone } from "../SvgDropzone"
+import { Text } from "../Text"
 import { TextField } from "../TextField"
 import styles from "./styles.module.css"
 
@@ -38,9 +38,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
   onClose,
 }) => {
   const transitions = useTransition(opened, {
-    from: { translateX: '100%' },
-    enter: { translateX: '0%' },
-    leave: { translateX: '100%' },
+    from: { translateX: "100%" },
+    enter: { translateX: "0%" },
+    leave: { translateX: "100%" },
     reverse: opened,
   })
 

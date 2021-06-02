@@ -4,9 +4,9 @@ import { mergeProps } from "@react-aria/utils"
 import React, { useRef } from "react"
 import { Box } from "../Box"
 import { FocusedRing } from "../FocusedRing"
-import { Space } from "../Space"
 import { Label } from "../Label"
-import styles from './styles.module.css'
+import { Space } from "../Space"
+import styles from "./styles.module.css"
 
 type Props = {
   label: string
@@ -27,8 +27,17 @@ export const TextField: React.FC<Props> = props => {
       <Label {...labelProps}>{label}</Label>
       <Space height={8} />
       <Box ref={ref}>
-        <input {...mergeProps(inputProps, focusProps)} ref={inputRef} className={styles.input} />
-        <FocusedRing targetRef={ref} focused={isFocusVisible} offset={2} radius={6} />
+        <input
+          {...mergeProps(inputProps, focusProps)}
+          ref={inputRef}
+          className={styles.input}
+        />
+        <FocusedRing
+          targetRef={ref}
+          focused={isFocusVisible}
+          offset={2}
+          radius={6}
+        />
       </Box>
     </Box>
   )
