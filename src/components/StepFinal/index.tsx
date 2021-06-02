@@ -46,7 +46,9 @@ export const StepFinal: React.FC<Props> = ({ animatedStyles, ...props }) => {
       {helpTransitions(
         (transitionStyle, visible) =>
           visible && (
-            <StepContainer animatedStyles={mounted ? transitionStyle : animatedStyles}>
+            <StepContainer
+              animatedStyles={mounted ? transitionStyle : animatedStyles}
+            >
               <OrbitControlHelp onClose={() => setHelpOpened(false)} />
             </StepContainer>
           ),
@@ -69,7 +71,10 @@ export const StepFinal: React.FC<Props> = ({ animatedStyles, ...props }) => {
 
                 <Space width={12} />
 
-                <Button variation="secondary" onPress={() => setHelpOpened(true)}>
+                <Button
+                  variation="secondary"
+                  onPress={() => setHelpOpened(true)}
+                >
                   ?
                 </Button>
               </Box>

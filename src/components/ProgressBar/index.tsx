@@ -10,7 +10,7 @@ type Props = {
   "minValue": number
   "maxValue": number
   "value": number
-  width: number | string
+  "width": number | string
 }
 
 export const ProgressBar: React.FC<Props> = props => {

@@ -32,7 +32,13 @@ export const Button: React.FC<Props> = props => {
     { ...props, elementType: "div" },
     ref,
   )
-  const { children, isDisabled, iconName, variation = 'primary', rightAligment } = props
+  const {
+    children,
+    isDisabled,
+    iconName,
+    variation = "primary",
+    rightAligment,
+  } = props
 
   return (
     <div
@@ -43,7 +49,7 @@ export const Button: React.FC<Props> = props => {
         isPressed && styles.pressed,
         isDisabled && styles.disabled,
         variationStyles[variation],
-        rightAligment && styles.rightAlign
+        rightAligment && styles.rightAlign,
       )}
     >
       {children}

@@ -18,7 +18,10 @@ const generatePath = (points: Point[]): string =>
         match(point)
           .with({ type: "M" }, ({ x, y }) => `${acc} M${x},${y}`)
           .with({ type: "L" }, ({ x, y }) => `${acc} L${x},${y}`)
-          .with({ type: 'C' }, ({ x, y, r }) => `${acc} A${r},${r} 0 0 1 ${x},${y}`)
+          .with(
+            { type: "C" },
+            ({ x, y, r }) => `${acc} A${r},${r} 0 0 1 ${x},${y}`,
+          )
           .exhaustive(),
       "",
     )

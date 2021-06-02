@@ -21,9 +21,9 @@ const RadioContext = React.createContext<RadioGroupState>({
 })
 
 type ColorRadioProps = {
-  'aria-label': string
-  color: string
-  value: CardColor
+  "aria-label": string
+  "color": string
+  "value": CardColor
 }
 
 export const ColorRadio: React.FC<ColorRadioProps> = props => {
@@ -44,7 +44,10 @@ export const ColorRadio: React.FC<ColorRadioProps> = props => {
       </VisuallyHidden>
       <div
         ref={circleRef}
-        className={clsx(styles.radioCircle, selected && styles.radioCircleSelected)}
+        className={clsx(
+          styles.radioCircle,
+          selected && styles.radioCircleSelected,
+        )}
         style={{ backgroundColor: color }}
       >
         <FocusedRing

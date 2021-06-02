@@ -41,7 +41,11 @@ export const Step2Logo: React.FC<Props> = ({
           <Box direction="column" align="end">
             <Text variation="secondary">{t("logo.haventLogo")}</Text>
             <Space height={4} />
-            <Button variation="empty" rightAligment={true} onPress={setSwanLogo}>
+            <Button
+              variation="empty"
+              rightAligment={true}
+              onPress={setSwanLogo}
+            >
               {t("logo.useSwanLogo")}
             </Button>
           </Box>
