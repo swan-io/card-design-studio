@@ -8,7 +8,7 @@ type Props = {
   children: string
 }
 
-export const Alert: React.FC<Props> = ({ children }) => {
+export const Alert: React.FC<Props> = React.memo(({ children }) => {
   return (
     <Box direction="row" align="center" className={styles.base}>
       <Icon name="info-filled" width={20} />
@@ -16,4 +16,6 @@ export const Alert: React.FC<Props> = ({ children }) => {
       <span>{children}</span>
     </Box>
   )
-}
+})
+
+Alert.displayName = "Alert"

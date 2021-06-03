@@ -15,7 +15,7 @@ type Props = {
   placeholder?: string
 }
 
-export const TextField: React.FC<Props> = props => {
+export const TextField: React.FC<Props> = React.memo(props => {
   const ref = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const { labelProps, inputProps } = useTextField(props, inputRef)
@@ -41,4 +41,6 @@ export const TextField: React.FC<Props> = props => {
       </Box>
     </Box>
   )
-}
+})
+
+TextField.displayName = "TextField"

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { animated, useTransition } from "react-spring"
 import { t } from "../../utils/i18n"
 import { Box } from "../Box"
@@ -12,19 +12,16 @@ import { Text } from "../Text"
 import { TextField } from "../TextField"
 import styles from "./styles.module.css"
 
-export type ConfigFormValue =
-  | { field: "name"; value: string }
-  | { field: "color"; value: CardColor }
-  | { field: "logo"; value: SVGElement }
-  | { field: "logoScale"; value: number }
-
 export type RightPanelProps = {
   opened: boolean
   name: string
   logo: SVGElement | null
   color: CardColor
   logoScale: number
-  onChange: (value: ConfigFormValue) => void
+  setName: (value: string) => void
+  setLogo: (logo: SVGElement) => void
+  setLogoScale: (value: number) => void
+  setColor: (color: CardColor) => void
   onClose: () => void
 }
 
@@ -34,7 +31,10 @@ export const RightPanel: React.FC<RightPanelProps> = ({
   logo,
   color,
   logoScale,
-  onChange,
+  setName,
+  setLogo,
+  setLogoScale,
+  setColor,
   onClose,
 }) => {
   const transitions = useTransition(opened, {
@@ -43,6 +43,25 @@ export const RightPanel: React.FC<RightPanelProps> = ({
     leave: { translateX: "100%" },
     reverse: opened,
   })
+
+  const colorOptions = useMemo(
+    () => (
+      <Box direction="row">
+        <ColorRadio
+          aria-label={t("labels.silver")}
+          color="#c9c9c9"
+          value="silver"
+        />
+        <Space width={48} />
+        <ColorRadio
+          aria-label={t("labels.black")}
+          color="#444444"
+          value="black"
+        />
+      </Box>
+    ),
+    [],
+  )
 
   return transitions(
     (transitionStyles, visible) =>
@@ -56,7 +75,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             label={t("labels.name")}
             placeholder={t("placeholders.name")}
             value={name}
-            onChange={value => onChange({ field: "name", value })}
+            onChange={setName}
           />
 
           <Space height={24} />
@@ -64,7 +83,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
           <SvgDropzone
             label={t("labels.logo")}
             logo={logo}
-            onSvgDrop={logo => onChange({ field: "logo", value: logo })}
+            onSvgDrop={setLogo}
           />
 
           <Space height={24} />
@@ -75,7 +94,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             step={0.01}
             label={t("labels.logoSize")}
             value={[logoScale]}
-            onChange={([value]) => onChange({ field: "logoScale", value })}
+            onChange={([value]) => setLogoScale(value)}
           />
 
           <Space height={24} />
@@ -83,23 +102,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
           <ColorsRadioGroup
             label={t("labels.color")}
             value={color}
-            onChange={value =>
-              onChange({ field: "color", value: value as CardColor })
-            }
+            onChange={setColor as (value: string) => void}
           >
-            <Box direction="row">
-              <ColorRadio
-                aria-label={t("labels.silver")}
-                color="#c9c9c9"
-                value="silver"
-              />
-              <Space width={48} />
-              <ColorRadio
-                aria-label={t("labels.black")}
-                color="#444444"
-                value="black"
-              />
-            </Box>
+            {colorOptions}
           </ColorsRadioGroup>
 
           <Fill minHeight={24} />

@@ -1,5 +1,5 @@
 import { useTransition } from "@react-spring/web"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import {
   CubeTextureLoader,
   Font,
@@ -122,6 +122,11 @@ export const App: React.FC = () => {
     trail: 200,
   })
 
+  const submitIntro = useCallback(() => setStep("name"), [])
+  const submitName = useCallback(() => setStep("logo"), [])
+  const submitLogo = useCallback(() => setStep("color"), [])
+  const submitColor = useCallback(() => setStep("completed"), [])
+
   return (
     <>
       {transitions(({ opacity, translateY }, displayedStep) =>
@@ -130,7 +135,7 @@ export const App: React.FC = () => {
             <IntroView
               animatedStyles={{ opacity }}
               loadingProgress={assets.progress}
-              onStart={() => setStep("name")}
+              onStart={submitIntro}
             />
           ))
           .with("name", () => (
@@ -138,7 +143,7 @@ export const App: React.FC = () => {
               animatedStyles={{ opacity, translateY }}
               name={name}
               onChange={handleNameChange}
-              onNext={() => setStep("logo")}
+              onNext={submitName}
             />
           ))
           .with("logo", () => (
@@ -148,7 +153,7 @@ export const App: React.FC = () => {
               logoScale={logoScale}
               onChangeLogo={setLogo}
               onChangeSize={setLogoScale}
-              onNext={() => setStep("color")}
+              onNext={submitLogo}
             />
           ))
           .with("color", () => (
@@ -156,7 +161,7 @@ export const App: React.FC = () => {
               animatedStyles={{ opacity, translateY }}
               color={color}
               onChange={setColor}
-              onNext={() => setStep("completed")}
+              onNext={submitColor}
             />
           ))
           .with("completed", () => (
@@ -166,18 +171,10 @@ export const App: React.FC = () => {
               logo={logo}
               logoScale={logoScale}
               color={color}
-              onChange={value => {
-                match(value)
-                  .with({ field: "name" }, ({ value }) =>
-                    handleNameChange(value),
-                  )
-                  .with({ field: "logo" }, ({ value }) => setLogo(value))
-                  .with({ field: "logoScale" }, ({ value }) =>
-                    setLogoScale(value),
-                  )
-                  .with({ field: "color" }, ({ value }) => setColor(value))
-                  .exhaustive()
-              }}
+              setName={setName}
+              setLogo={setLogo}
+              setLogoScale={setLogoScale}
+              setColor={setColor}
             />
           ))
           .exhaustive(),

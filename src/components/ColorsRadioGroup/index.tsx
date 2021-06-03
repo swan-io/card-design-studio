@@ -78,16 +78,20 @@ type ColorsRadioGroupProps = {
   onChange: (value: string) => void
 }
 
-export const ColorsRadioGroup: React.FC<ColorsRadioGroupProps> = props => {
-  const { label, children } = props
-  const state = useRadioGroupState(props)
-  const { radioGroupProps, labelProps } = useRadioGroup(props, state)
+export const ColorsRadioGroup: React.FC<ColorsRadioGroupProps> = React.memo(
+  props => {
+    const { label, children } = props
+    const state = useRadioGroupState(props)
+    const { radioGroupProps, labelProps } = useRadioGroup(props, state)
 
-  return (
-    <div {...radioGroupProps}>
-      <Label {...labelProps}>{label}</Label>
-      <Space height={8} />
-      <RadioContext.Provider value={state}>{children}</RadioContext.Provider>
-    </div>
-  )
-}
+    return (
+      <div {...radioGroupProps}>
+        <Label {...labelProps}>{label}</Label>
+        <Space height={8} />
+        <RadioContext.Provider value={state}>{children}</RadioContext.Provider>
+      </div>
+    )
+  },
+)
+
+ColorsRadioGroup.displayName = "ColorsRadioGroup"
