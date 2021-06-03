@@ -14,6 +14,10 @@ const variationStyles: Record<TextVariation, string> = {
   secondary: styles.secondary,
 }
 
-export const Text: React.FC<Props> = ({ children, variation = "main" }) => {
-  return <span className={variationStyles[variation]}>{children}</span>
-}
+export const Text: React.FC<Props> = React.memo(
+  ({ children, variation = "main" }) => {
+    return <span className={variationStyles[variation]}>{children}</span>
+  },
+)
+
+Text.displayName = "Text"

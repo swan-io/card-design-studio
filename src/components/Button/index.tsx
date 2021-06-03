@@ -25,7 +25,7 @@ const variationStyles: Record<ButtonVariation, string> = {
   empty: styles.buttonEmpty,
 }
 
-export const Button: React.FC<Props> = props => {
+export const Button: React.FC<Props> = React.memo(props => {
   const ref = useRef<HTMLDivElement | null>(null)
   const { focusProps, isFocusVisible } = useFocusRing()
   const { buttonProps, isPressed } = useButton(
@@ -69,4 +69,6 @@ export const Button: React.FC<Props> = props => {
       />
     </div>
   )
-}
+})
+
+Button.displayName = "Button"

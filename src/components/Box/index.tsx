@@ -70,3 +70,5 @@ export const Box = React.forwardRef<HTMLDivElement | null, Props>(
     )
   },
 )
+
+Box.displayName = "Box"

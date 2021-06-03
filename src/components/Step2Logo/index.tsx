@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 import { t } from "../../utils/i18n"
 import { createSwanLogoSvg } from "../../utils/logo"
 import { Box } from "../Box"
@@ -29,29 +29,32 @@ export const Step2Logo: React.FC<Props> = ({
   onChangeSize,
   onNext,
 }) => {
-  const setSwanLogo = () => {
+  const setSwanLogo = useCallback(() => {
     const swanLogo = createSwanLogoSvg()
     onChangeSize(DEFAULT_LOGO_ZOOM)
     onChangeLogo(swanLogo)
-  }
+  }, [onChangeSize, onChangeLogo])
 
   return (
     <StepContainer animatedStyles={animatedStyles}>
       <SvgDropzone
         label={t("labels.logo")}
-        help={
-          <Box direction="column" align="end">
-            <Text variation="secondary">{t("logo.haventLogo")}</Text>
-            <Space height={4} />
-            <Button
-              variation="empty"
-              rightAligment={true}
-              onPress={setSwanLogo}
-            >
-              {t("logo.useSwanLogo")}
-            </Button>
-          </Box>
-        }
+        help={useMemo(
+          () => (
+            <Box direction="column" align="end">
+              <Text variation="secondary">{t("logo.haventLogo")}</Text>
+              <Space height={4} />
+              <Button
+                variation="empty"
+                rightAligment={true}
+                onPress={setSwanLogo}
+              >
+                {t("logo.useSwanLogo")}
+              </Button>
+            </Box>
+          ),
+          [setSwanLogo],
+        )}
         logo={logo}
         onSvgDrop={onChangeLogo}
       />

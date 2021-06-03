@@ -1,4 +1,4 @@
-import React, { memo } from "react"
+import React from "react"
 import type { SpaceValue } from "../Space"
 
 type Props = {
@@ -6,6 +6,10 @@ type Props = {
   minHeight?: SpaceValue
 }
 
-export const Fill: React.FC<Props> = memo(({ minWidth = 0, minHeight = 0 }) => (
-  <div style={{ flex: 1, minWidth, minHeight, flexShrink: 0 }} />
-))
+export const Fill: React.FC<Props> = React.memo(
+  ({ minWidth = 0, minHeight = 0 }) => (
+    <div style={{ flex: 1, minWidth, minHeight, flexShrink: 0 }} />
+  ),
+)
+
+Fill.displayName = "Fill"

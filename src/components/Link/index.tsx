@@ -11,7 +11,7 @@ type Props = {
   children: string
 }
 
-export const Link: React.FC<Props> = ({ to, children }: Props) => {
+export const Link: React.FC<Props> = React.memo(({ to, children }: Props) => {
   const ref = useRef<HTMLAnchorElement | null>(null)
   const { focusProps, isFocusVisible } = useFocusRing()
   const { buttonProps, isPressed } = useButton({ elementType: "a" }, ref)
@@ -36,4 +36,6 @@ export const Link: React.FC<Props> = ({ to, children }: Props) => {
       </a>
     </div>
   )
-}
+})
+
+Link.displayName = "Link"
