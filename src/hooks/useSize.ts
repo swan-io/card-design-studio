@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import ResizeObserver from "resize-observer-polyfill"
 
 export const useSize = (
   ref: React.MutableRefObject<HTMLElement | null>,
@@ -7,9 +8,11 @@ export const useSize = (
 
   useEffect(() => {
     if (ref.current) {
-      const resizeObserver = new ResizeObserver(([entry]) => {
-        const { clientWidth, clientHeight } = entry.target
-        setSize({ width: clientWidth, height: clientHeight })
+      const resizeObserver = new ResizeObserver(() => {
+        if (ref.current) {
+          const { clientWidth, clientHeight } = ref.current
+          setSize({ width: clientWidth, height: clientHeight })
+        }
       })
 
       resizeObserver.observe(ref.current)
@@ -17,8 +20,8 @@ export const useSize = (
       return () => {
         if (ref.current) {
           resizeObserver.unobserve(ref.current)
-          resizeObserver.disconnect()
         }
+        resizeObserver.disconnect()
       }
     }
   }, [])
