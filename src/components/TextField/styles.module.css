@@ -1,4 +1,7 @@
 .input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   position: relative;
   z-index: 3;
   height: 40px;
