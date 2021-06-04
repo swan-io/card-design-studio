@@ -191,15 +191,17 @@ const cameraPositions: Record<
   logo: {
     getPosition: ratio => {
       const x = Math.min(-10, -10 / ratio)
-      // TODO improve z position
-      return new Vector3(x, -1, 0)
+      const y = Math.min(-1, -1 / (ratio * ratio))
+      return new Vector3(x, y, 0)
     },
     rotation: new Vector3(0, 0, 0),
   },
   color: {
     getPosition: ratio => {
       const x = Math.min(-15, -9 / ratio)
-      return new Vector3(x, 0, 0)
+      const y = Math.min(0, -1 / ratio)
+      const z = Math.max(0, 1 / (ratio * 2.5))
+      return new Vector3(x, y, z)
     },
     rotation: new Vector3(0, 0.68, -0.22),
   },
