@@ -8,5 +8,8 @@ export type Card3dAssets = {
     silver: Texture
     black: Texture
   }
-  font: Font
+  fonts: {
+    maisonNeue: Font
+    markPro: Font
+  }
 }

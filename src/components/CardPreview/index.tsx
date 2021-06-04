@@ -48,6 +48,7 @@ type TextConfig = {
   side: "front" | "back"
   top: number
   left: number
+  fontName: keyof Card3dAssets["fonts"]
 }
 
 const BACK_TEXT_ROTATION = Math.PI / 2
@@ -66,10 +67,11 @@ const interpolateCos = interpolate({
 
 const nameTextConfig: TextConfig = {
   content: "",
-  size: 0.2,
+  size: 0.18,
   side: "front",
-  top: -1.8,
+  top: -1.95,
   left: -3.5,
+  fontName: "maisonNeue",
 }
 
 const primaryTexts: TextConfig[] = [
@@ -79,27 +81,31 @@ const primaryTexts: TextConfig[] = [
     side: "front",
     left: 3.85,
     top: -2.15,
+    fontName: "markPro",
   },
   {
     content: "5105 1051 0510 5100",
-    size: 0.3,
+    size: 0.36,
     side: "back",
-    left: 3.8,
-    top: -1.7,
+    left: 4,
+    top: -1.85,
+    fontName: "maisonNeue",
   },
   {
     content: "08/23",
-    size: 0.18,
+    size: 0.19,
     side: "back",
-    left: 3.8,
-    top: -2.2,
+    left: 4,
+    top: -2.3,
+    fontName: "maisonNeue",
   },
   {
     content: "CVC 000",
-    size: 0.18,
+    size: 0.19,
     side: "back",
     left: 2.55,
-    top: -2.2,
+    top: -2.3,
+    fontName: "maisonNeue",
   },
   {
     content: "debit",
@@ -107,43 +113,49 @@ const primaryTexts: TextConfig[] = [
     side: "back",
     left: -1.9,
     top: -1.05,
+    fontName: "markPro",
   },
   {
-    content: "Identifier 0000000000",
-    size: 0.2,
+    content: "Identifier: 0000000000",
+    size: 0.17,
     side: "back",
-    left: 3.8,
-    top: 0.3,
+    left: 4,
+    top: 0.7,
+    fontName: "maisonNeue",
   },
 ]
 const secondaryTexts: TextConfig[] = [
   {
     content: "This card is issued by Swan, pursuant to license",
-    size: 0.145,
+    size: 0.147,
     side: "back",
-    left: 3.8,
-    top: -0.1,
+    left: 4,
+    top: 0.2,
+    fontName: "maisonNeue",
   },
   {
     content: "by Mastercard international.",
-    size: 0.145,
+    size: 0.147,
     side: "back",
-    left: 3.8,
-    top: -0.4,
+    left: 4,
+    top: -0.1,
+    fontName: "maisonNeue",
   },
   {
     content: "support@swan.io",
-    size: 0.11,
+    size: 0.1,
     side: "back",
-    left: 3.8,
+    left: 4,
     top: 2.42,
+    fontName: "markPro",
   },
   {
     content: "IDEMIA 9 1212121L 09/21",
-    size: 0.11,
+    size: 0.1,
     side: "back",
-    left: -2,
+    left: -2.4,
     top: 2.42,
+    fontName: "markPro",
   },
 ]
 
@@ -212,12 +224,12 @@ const setTextMeshPosition = (
 
 const createTextsMesh = (
   texts: TextConfig[],
-  font: Font,
+  fonts: Card3dAssets["fonts"],
   material: Material,
 ): Mesh => {
   const geometries = texts.map(text => {
     const geometry = new TextGeometry(text.content, {
-      font,
+      font: fonts[text.fontName],
       height: 0,
       size: text.size,
     })
@@ -539,12 +551,12 @@ export const CardCanvas: React.FC<Props> = memo(
       // Create and add text on card
       const primaryTextsMesh = createTextsMesh(
         primaryTexts,
-        assets.font,
+        assets.fonts,
         textPrimaryMaterial,
       )
       const secondaryTextsMesh = createTextsMesh(
         secondaryTexts,
-        assets.font,
+        assets.fonts,
         textSecondaryMaterial,
       )
       scene.add(primaryTextsMesh)
@@ -638,9 +650,9 @@ export const CardCanvas: React.FC<Props> = memo(
 
     // Update text
     useEffect(() => {
-      if (name && assets.font) {
+      if (name) {
         const textGeometry = new TextGeometry(name, {
-          font: assets.font,
+          font: assets.fonts[nameTextConfig.fontName],
           size: nameTextConfig.size,
           height: 0,
           curveSegments: 6,
@@ -736,7 +748,7 @@ export const CardCanvas: React.FC<Props> = memo(
       const logoMeasureMesh = createMeasureMesh(
         width,
         height,
-        assets.font,
+        assets.fonts.markPro,
         measureTextMaterial,
       )
 

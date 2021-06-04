@@ -63,9 +63,13 @@ const use3dAssets = (): App3dAssets => {
     cardTextures.black.encoding = sRGBEncoding
     cardTextures.silver.encoding = sRGBEncoding
 
-    let font: Font
+    let maisonNeueFont: Font
+    fontLoader.load("fonts/MaisonNeue_Book.json", loadedFont => {
+      maisonNeueFont = loadedFont
+    })
+    let markProFont: Font
     fontLoader.load("fonts/MarkPro_Regular.json", loadedFont => {
-      font = loadedFont
+      markProFont = loadedFont
     })
     let gltf: GLTF
     gltfLoader.load("models/card/card.gltf", loadedGltf => {
@@ -94,7 +98,10 @@ const use3dAssets = (): App3dAssets => {
         gltf,
         environmentMap,
         cardTextures,
-        font,
+        fonts: {
+          maisonNeue: maisonNeueFont,
+          markPro: markProFont,
+        },
       })
     }
   }, [])
