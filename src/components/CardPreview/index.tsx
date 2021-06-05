@@ -40,6 +40,7 @@ import gradientFragmentShader from "./gradientFragment.glsl?raw"
 import gradientVertexShader from "./gradientVertex.glsl?raw"
 import mapFragmentShader from "./mapFragment.glsl?raw"
 import mapParsFragmentShader from "./mapParsFragment.glsl?raw"
+import shinyColorFragmentShader from "./shinyColorFragment.glsl?raw"
 import styles from "./styles.module.css"
 
 type TextConfig = {
@@ -410,6 +411,21 @@ export const CardCanvas: React.FC<Props> = memo(
       }
       return material
     })
+    const shinyMaterial = useThreejsObject(() => {
+      const material = new MeshStandardMaterial({
+        color: new Color(0xa6a6a6),
+        metalness: 0.6,
+        roughness: 0.5,
+        envMapIntensity: ENV_MAP_INTENSITY,
+      })
+      material.onBeforeCompile = shader => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+          "#include <color_fragment>",
+          shinyColorFragmentShader,
+        )
+      }
+      return material
+    })
     const logoMaterial = useThreejsObject(
       () =>
         new MeshStandardMaterial({
@@ -573,6 +589,9 @@ export const CardCanvas: React.FC<Props> = memo(
           // set custom material for card to handle color change with custom effect
           if (child.name === "card") {
             child.material = cardMaterial
+          }
+          if (child.name === "metal_mastercard") {
+            child.material = shinyMaterial
           }
 
           child.material.envMapIntensity = ENV_MAP_INTENSITY
