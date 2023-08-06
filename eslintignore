@@ -1,0 +1,4 @@
+**/*.js
+**/*.mjs
+*.d.ts
+vite.config.ts
