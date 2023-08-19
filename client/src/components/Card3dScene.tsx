@@ -32,7 +32,15 @@ const assetsUrls: Card3dAssetsUrls = {
   colorSilver,
 };
 
-export default () => (
+type Props = {
+  step: ConfigStep;
+  ownerName: string;
+  color: CardConfig["color"];
+  logo: SVGElement | null;
+  logoScale: number;
+};
+
+export default ({ ownerName, color, logo, logoScale }: Props) => (
   <Canvas camera={{ position: [0, 0, 12], fov: 50 }}>
     <OrbitControls enablePan={false} enableZoom={false} />
     <ambientLight color={0xffffff} intensity={1} />
@@ -52,12 +60,12 @@ export default () => (
 
     <Card
       cardNumber="1234 5678 9012 3456"
-      ownerName="John Doe"
-      color="Silver"
+      ownerName={ownerName}
+      color={color}
       expirationDate="12/24"
       cvv="123"
-      logo={null}
-      logoScale={1}
+      logo={logo}
+      logoScale={logoScale}
       assetsUrls={assetsUrls}
     />
   </Canvas>
