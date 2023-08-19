@@ -16,6 +16,7 @@
     "@swan-io/boxed": "1.0.2",
     "@swan-io/chicane": "1.4.1",
     "@swan-io/lake": "2.7.5",
+    "@swan-io/shared-business": "2.7.5",
     "core-js": "3.31.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
