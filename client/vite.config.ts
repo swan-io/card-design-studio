@@ -20,7 +20,7 @@ export default defineConfig({
   root,
   build: {
     emptyOutDir: true,
-    outDir: "../dist",
+    outDir: "../../server/dist/assets",
   },
   server: {
     fs: {

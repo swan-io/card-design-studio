@@ -1,6 +1,8 @@
 import replyFrom from "@fastify/reply-from";
 import sensible from "@fastify/sensible";
+import fastifyStatic from "@fastify/static";
 import fastify from "fastify";
+import path from "pathe";
 import { createViteDevServer } from "./client/devServer";
 
 const PORT = 8080;
@@ -29,6 +31,10 @@ const start = async () => {
 
     app.get("/*", async (request, reply) => {
       return reply.from(`${base}${request.url}`);
+    });
+  } else {
+    await app.register(fastifyStatic, {
+      root: path.join(__dirname, "./assets"),
     });
   }
 

@@ -1,10 +1,10 @@
-import getPort from "get-port";
 import http from "node:http";
 import path from "pathe";
 
 export async function createViteDevServer() {
   const liveReloadServer = http.createServer();
   const { createServer } = await import("vite");
+  const { default: getPort } = await import("get-port");
   const mainServerPort = await getPort();
   const liveReloadServerPort = await getPort();
   liveReloadServer.listen(liveReloadServerPort);
