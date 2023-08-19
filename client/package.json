@@ -18,12 +18,14 @@
     "@swan-io/lake": "2.7.5",
     "@swan-io/shared-business": "2.7.5",
     "core-js": "3.31.1",
+    "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native-web": "0.19.7",
     "ts-pattern": "5.0.4"
   },
   "devDependencies": {
+    "@types/lodash": "4.14.197",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
     "@types/react-native": "0.72.2"
