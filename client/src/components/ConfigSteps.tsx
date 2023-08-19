@@ -5,6 +5,7 @@ import { Tile } from "@swan-io/lake/src/components/Tile";
 import { TransitionView } from "@swan-io/lake/src/components/TransitionView";
 import { animations } from "@swan-io/lake/src/constants/design";
 import { StyleSheet } from "react-native";
+import { t } from "../utils/i18n";
 
 const styles = StyleSheet.create({
   stepContainer: {
@@ -24,7 +25,7 @@ export const WelcomeStep = ({ visible, onStart }: WelcomeStepProps) => (
   <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromRight}>
     {visible ? (
       <Tile>
-        <LakeButton onPress={onStart}>Start</LakeButton>
+        <LakeButton onPress={onStart}>{t("welcome.button")}</LakeButton>
       </Tile>
     ) : null}
   </TransitionView>
@@ -42,7 +43,7 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
     {visible ? (
       <Tile>
         <LakeTextInput value={name} onChangeText={onNameChange} />
-        <LakeButton onPress={onNext}>Next</LakeButton>
+        <LakeButton onPress={onNext}>{t("common.nextStep")}</LakeButton>
       </Tile>
     ) : null}
   </TransitionView>
@@ -63,8 +64,8 @@ export const LogoStep = ({ visible, onPrevious, onNext }: LogoStepProps) => (
     {visible ? (
       <Tile>
         <LakeText>LOGO STEP</LakeText>
-        <LakeButton onPress={onPrevious}>Previous</LakeButton>
-        <LakeButton onPress={onNext}>Next</LakeButton>
+        <LakeButton onPress={onPrevious}>{t("common.previousStep")}</LakeButton>
+        <LakeButton onPress={onNext}>{t("common.nextStep")}</LakeButton>
       </Tile>
     ) : null}
   </TransitionView>
@@ -83,8 +84,8 @@ export const ColorStep = ({ visible, onPrevious, onNext }: ColorStepProps) => (
     {visible ? (
       <Tile>
         <LakeText>COLOR STEP</LakeText>
-        <LakeButton onPress={onPrevious}>Previous</LakeButton>
-        <LakeButton onPress={onNext}>Next</LakeButton>
+        <LakeButton onPress={onPrevious}>{t("common.previousStep")}</LakeButton>
+        <LakeButton onPress={onNext}>{t("common.nextStep")}</LakeButton>
       </Tile>
     ) : null}
   </TransitionView>
