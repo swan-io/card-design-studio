@@ -2,7 +2,7 @@ import "@swan-io/lake/src/assets/fonts/Inter.css";
 import "@swan-io/lake/src/assets/main.css";
 import "core-js/actual/array/flat";
 import { AppRegistry } from "react-native";
-import { App } from "./App";
+import { App } from "./app";
 
 const rootTag = document.getElementById("app-root");
 
