@@ -8,3 +8,8 @@ type CardConfig = {
   logoScale: number;
   color: "Silver" | "Black";
 };
+
+type Size = {
+  width: number;
+  height: number;
+};
