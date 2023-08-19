@@ -12,9 +12,12 @@ import { SwanLogo } from "@swan-io/lake/src/components/SwanLogo";
 import { Tile } from "@swan-io/lake/src/components/Tile";
 import { TransitionView } from "@swan-io/lake/src/components/TransitionView";
 import { animations, colors } from "@swan-io/lake/src/constants/design";
+import { isNullish } from "@swan-io/lake/src/utils/nullish";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { t } from "../utils/i18n";
-import { LogoUploadArea } from "./SvgUploadArea";
+import { ConfigRightPanel } from "./ConfigRightPanel";
+import { SvgUploadArea } from "./SvgUploadArea";
 
 const styles = StyleSheet.create({
   welcomeContainer: {
@@ -158,13 +161,14 @@ export const LogoStep = ({
     <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromTop}>
       {visible ? (
         <Tile style={styles.tile}>
-          <LogoUploadArea logo={logo} onChange={onLogoChange} />
+          <SvgUploadArea logo={logo} onChange={onLogoChange} />
           <Space height={24} />
 
           <LakeLabel
             label={t("step.logoSize.label")}
             render={() => (
               <Slider
+                disabled={isNullish(logo)}
                 minimum={0}
                 maximum={1}
                 step={0.01}
@@ -193,6 +197,7 @@ export const LogoStep = ({
               iconPosition="end"
               color="live"
               size="small"
+              disabled={isNullish(logo)}
               onPress={onNext}
             >
               {t("common.nextStep")}
@@ -269,3 +274,54 @@ export const ColorStep = ({
     ) : null}
   </TransitionView>
 );
+
+type CompletedStepProps = {
+  visible: boolean;
+  ownerName: string;
+  color: CardConfig["color"];
+  logo: SVGElement | null;
+  logoScale: number;
+  onOwnerNameChange: (ownerName: string) => void;
+  onColorChange: (color: CardConfig["color"]) => void;
+  onLogoChange: (logo: SVGElement) => void;
+  onLogoScaleChange: (logoScale: number) => void;
+};
+
+export const CompletedStep = ({
+  visible,
+  ownerName,
+  color,
+  logo,
+  logoScale,
+  onOwnerNameChange,
+  onColorChange,
+  onLogoChange,
+  onLogoScaleChange,
+}: CompletedStepProps) => {
+  const [editing, setEditing] = useState(false);
+
+  return (
+    <>
+      <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromTop}>
+        {visible ? (
+          <LakeButton color="live" icon="edit-regular" onPress={() => setEditing(true)}>
+            {t("step.completed.edit")}
+          </LakeButton>
+        ) : null}
+      </TransitionView>
+
+      <ConfigRightPanel
+        visible={editing}
+        ownerName={ownerName}
+        color={color}
+        logo={logo}
+        logoScale={logoScale}
+        onOwnerNameChange={onOwnerNameChange}
+        onColorChange={onColorChange}
+        onLogoChange={onLogoChange}
+        onLogoScaleChange={onLogoScaleChange}
+        onClose={() => setEditing(false)}
+      />
+    </>
+  );
+};

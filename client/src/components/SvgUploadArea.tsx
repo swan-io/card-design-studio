@@ -11,7 +11,7 @@ type Props = {
   onChange: (logo: SVGElement) => void;
 };
 
-export const LogoUploadArea = ({ logo, onChange }: Props) => {
+export const SvgUploadArea = ({ logo, onChange }: Props) => {
   const [error, setError] = useState(false);
 
   const handleLogoDrop = ([file]: File[]) => {
@@ -37,7 +37,7 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
       label={t("step.logo.label")}
       render={() => (
         <UploadArea
-          accept={[".svg"]}
+          accept={["image/svg+xml"]}
           error={error ? t("step.logo.error") : undefined}
           maxSize={LOGO_MAX_SIZE}
           onDropAccepted={handleLogoDrop}

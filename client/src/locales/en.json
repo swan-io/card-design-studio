@@ -13,5 +13,8 @@
   "step.logoSize.label": "Logo size",
   "step.color.label": "Card color",
   "step.color.silver": "Silver",
-  "step.color.black": "Black"
+  "step.color.black": "Black",
+  "step.completed.edit": "Edit config",
+  "rightPanel.title": "Card design settings",
+  "rightPanel.close": "Close"
 }
