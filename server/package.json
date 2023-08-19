@@ -24,11 +24,14 @@
     "@swan-io/boxed": "1.1.0",
     "fastify": "4.21.0",
     "get-port": "7.0.0",
+    "lodash": "4.17.21",
     "pathe": "1.1.1",
     "ts-pattern": "5.0.5",
-    "valienv": "0.5.0"
+    "valienv": "0.5.0",
+    "zod": "3.22.2"
   },
   "devDependencies": {
+    "@types/lodash": "4.14.197",
     "shx": "0.3.4"
   }
 }
