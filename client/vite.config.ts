@@ -1,9 +1,13 @@
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react-swc";
+import path from "pathe";
 import { defineConfig, searchForWorkspaceRoot } from "vite";
+
+const root = path.resolve(__dirname, "./src");
 
 const getLakePaths = () => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { lake } = require("../locale.config");
     return typeof lake === "string" ? [lake] : [];
   } catch {
@@ -13,10 +17,10 @@ const getLakePaths = () => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: "./src",
+  root,
   build: {
     emptyOutDir: true,
-    outDir: "./dist",
+    outDir: "../dist",
   },
   server: {
     fs: {
