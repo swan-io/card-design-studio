@@ -26,7 +26,12 @@
     "link-locale-lake": "sh scripts/lake/link-locale-lake.sh",
     "unlink-locale-lake": "sh scripts/lake/unlink-locale-lake.sh",
     "typecheck": "tsc --noEmit",
-    "dev": "tsx -r dotenv/config server/src/index.ts --dev"
+    "dev": "tsx -r dotenv/config server/src/index.ts --dev",
+    "clean": "shx rm -rf server/dist",
+    "build-server": "tsc --project server/tsconfig.json",
+    "build-client": "vite build --config client/vite.config.ts",
+    "build": "yarn clean && yarn build-server && yarn build-client",
+    "start": "node server/dist/index.js"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
@@ -56,6 +61,7 @@
     "pathe": "1.1.1",
     "prettier": "2.8.8",
     "prettier-plugin-organize-imports": "3.2.3",
+    "terser": "5.19.2",
     "tsx": "3.12.7",
     "type-fest": "4.0.0",
     "typescript": "5.1.6",
