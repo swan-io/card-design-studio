@@ -1,7 +1,13 @@
 import { LoadingView } from "@swan-io/lake/src/components/LoadingView";
 import { Suspense, lazy, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { ColorStep, LogoStep, NameStep, WelcomeStep } from "./components/ConfigSteps";
+import {
+  ColorStep,
+  CompletedStep,
+  LogoStep,
+  NameStep,
+  WelcomeStep,
+} from "./components/ConfigSteps";
 const Card3dScene = lazy(() => import("./components/Card3dScene"));
 
 const styles = StyleSheet.create({
@@ -49,6 +55,18 @@ export const App = () => {
         onColorChange={setColor}
         onPrevious={() => setStep("logo")}
         onNext={() => setStep("completed")}
+      />
+
+      <CompletedStep
+        visible={step === "completed"}
+        ownerName={name}
+        color={color}
+        logo={logo}
+        logoScale={logoScale}
+        onOwnerNameChange={setName}
+        onLogoChange={setLogo}
+        onLogoScaleChange={setLogoScale}
+        onColorChange={setColor}
       />
     </View>
   );
