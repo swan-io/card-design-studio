@@ -4,6 +4,7 @@ import fastifyStatic from "@fastify/static";
 import fastify from "fastify";
 import path from "pathe";
 import { createViteDevServer } from "./client/devServer";
+import { cardConfigSchema, getCardConfig, saveCardConfig } from "./utils/cardConfig";
 
 const PORT = 8080;
 const NODE_ENV = process.env.NODE_ENV ?? "development";
@@ -21,8 +22,30 @@ const start = async () => {
   });
 
   app.post("/api/save-config", async (request, reply) => {
-    console.log(request.body);
-    return reply.send({ hello: "world" });
+    const parsedBody = cardConfigSchema.safeParse(request.body);
+
+    if (!parsedBody.success) {
+      return reply.badRequest();
+    }
+
+    const body = parsedBody.data;
+
+    const configId = await saveCardConfig(body);
+
+    return reply.status(201).send({ configId });
+  });
+
+  app.get("/api/get-config/:id", async (request, reply) => {
+    // @ts-expect-error
+    const configId: string = request.params.id; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+
+    const cardConfig = await getCardConfig(configId);
+
+    return cardConfig.match({
+      None: () => reply.notFound(),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      Some: config => reply.status(200).send(config),
+    });
   });
 
   if (NODE_ENV !== "production") {
