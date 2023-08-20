@@ -8,6 +8,7 @@ import {
   NameStep,
   WelcomeStep,
 } from "./components/ConfigSteps";
+import { Router } from "./utils/routes";
 const Card3dScene = lazy(() => import("./components/Card3dScene"));
 
 const styles = StyleSheet.create({
@@ -18,7 +19,10 @@ const styles = StyleSheet.create({
 });
 
 export const App = () => {
-  const [step, setStep] = useState<ConfigStep>("welcome");
+  const route = Router.useRoute(["ConfigCard", "Share"]);
+  const [step, setStep] = useState<ConfigStep>(() =>
+    route?.name === "Share" ? "share" : "welcome",
+  );
   const [name, setName] = useState("");
   const [logo, setLogo] = useState<SVGElement | null>(null);
   const [logoScale, setLogoScale] = useState(1);
