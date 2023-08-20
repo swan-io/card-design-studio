@@ -21,7 +21,7 @@ const start = async () => {
     });
   });
 
-  app.post("/api/save-config", async (request, reply) => {
+  app.post("/api/config", async (request, reply) => {
     const parsedBody = cardConfigSchema.safeParse(request.body);
 
     if (!parsedBody.success) {
@@ -35,7 +35,7 @@ const start = async () => {
     return reply.status(201).send({ configId });
   });
 
-  app.get("/api/get-config/:id", async (request, reply) => {
+  app.get("/api/config/:id", async (request, reply) => {
     // @ts-expect-error
     const configId: string = request.params.id; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
