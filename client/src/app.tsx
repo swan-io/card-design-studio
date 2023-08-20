@@ -8,6 +8,7 @@ import {
   NameStep,
   WelcomeStep,
 } from "./components/ConfigSteps";
+import { ShareOverlay } from "./components/ShareOverlay";
 import { Router } from "./utils/routes";
 const Card3dScene = lazy(() => import("./components/Card3dScene"));
 
@@ -33,6 +34,18 @@ export const App = () => {
       <Suspense fallback={<LoadingView />}>
         <Card3dScene step={step} ownerName={name} color={color} logo={logo} logoScale={logoScale} />
       </Suspense>
+
+      {route?.name === "Share" && (
+        <ShareOverlay
+          configId={route.params.configId}
+          onLoaded={config => {
+            setName(config.name);
+            setColor(config.color);
+            setLogo(config.logo);
+            setLogoScale(config.logoScale);
+          }}
+        />
+      )}
 
       <WelcomeStep visible={step === "welcome"} onStart={() => setStep("name")} />
 
