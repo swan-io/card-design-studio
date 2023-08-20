@@ -1,6 +1,5 @@
 import { Box } from "@swan-io/lake/src/components/Box";
 import { Fill } from "@swan-io/lake/src/components/Fill";
-import { LakeAlert } from "@swan-io/lake/src/components/LakeAlert";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
@@ -119,9 +118,6 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
             />
           )}
         />
-
-        <LakeAlert title={t("step.name.info")} variant="info" />
-        <Space height={24} />
 
         <LakeButton
           icon="arrow-right-filled"
