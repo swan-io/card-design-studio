@@ -2,7 +2,7 @@ import { createRouter } from "@swan-io/chicane";
 
 export const Router = createRouter({
   ConfigCard: "/",
-  Share: "/share/:configName",
+  Share: "/share/:configId",
 });
 
 export const routeNames = ["ConfigCard", "Share"] as const;

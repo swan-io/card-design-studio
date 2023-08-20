@@ -16,5 +16,8 @@
   "step.color.black": "Black",
   "step.completed.edit": "Edit config",
   "rightPanel.title": "Card design settings",
-  "rightPanel.close": "Close"
+  "rightPanel.close": "Close",
+  "share.failedToLoad.title": "Failed to load the card configuration.",
+  "share.failedToLoad.subtitle": "Please try again.",
+  "share.failedToLoad.reload": "Reload"
 }
