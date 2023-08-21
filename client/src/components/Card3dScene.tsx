@@ -1,4 +1,4 @@
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import envNx from "@swan-io/lake/src/assets/3d-card/environment/nx.png?url";
 import envNy from "@swan-io/lake/src/assets/3d-card/environment/ny.png?url";
@@ -46,28 +46,33 @@ const cameraPositions: Record<
     rotation: new Vector3(0, 0, 0),
   },
   name: {
-    getPosition: _ratio => {
-      return new Vector3(0, 0, 12);
+    getPosition: ratio => {
+      const z = 6 / Math.min(1, ratio);
+      return new Vector3(-2, -1.5, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
   logo: {
-    getPosition: _ratio => {
-      return new Vector3(0, 0, 12);
+    getPosition: ratio => {
+      const z = 10 / Math.min(1, ratio);
+      const y = -5.8 + 4 * Math.min(1, ratio);
+      return new Vector3(0, y, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
   color: {
-    getPosition: _ratio => {
-      return new Vector3(0, 0, 12);
+    getPosition: ratio => {
+      const z = 16 / Math.min(1, ratio * 1.7);
+      return new Vector3(0.5, -1, z);
     },
-    rotation: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0.6, 0.02),
   },
   completed: {
-    getPosition: _ratio => {
-      return new Vector3(0, 0, 12);
+    getPosition: ratio => {
+      const z = 16 / Math.min(1, ratio * 1.7);
+      return new Vector3(-0.5, -1, z);
     },
-    rotation: new Vector3(0, 0, 0),
+    rotation: new Vector3(-0.02, 2.6, 0),
   },
   share: {
     getPosition: _ratio => {
@@ -86,17 +91,18 @@ type Props = {
 };
 
 export default ({ step, ownerName, color, logo, logoScale }: Props) => (
-  <Canvas camera={{ position: [0, 0, 12], fov: 50, far: 100, near: 0.1 }}>
+  <Canvas>
     <CardScene step={step} ownerName={ownerName} color={color} logo={logo} logoScale={logoScale} />
   </Canvas>
 );
 
 const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const cardRef = useRef<THREE.Group>(null);
+  const cameraGroupRef = useRef<THREE.Group>(null);
   const camera = useThree(state => state.camera);
   const ratioRef = useRef(1);
   const stepRef = useRef(step);
-  const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
+  const [orbitEnabled] = useState(() => step === "share");
 
   // Change camera position on resize
   useThree(({ size }) => {
@@ -112,13 +118,18 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
     const { getPosition, rotation } = cameraPositions[stepRef.current];
     const position = getPosition(ratioRef.current);
     camera.position.set(position.x, position.y, position.z);
-    camera.rotation.set(rotation.x, rotation.y, rotation.z);
+    cameraGroupRef.current?.rotation.set(rotation.x, rotation.y, rotation.z);
 
-    setOrbitEnabled(step === "completed" || step === "share");
+    // setOrbitEnabled(step === "completed" || step === "share");
   }, [step, camera]);
 
   return (
     <>
+      {/* use group to rotate the camera around scene center independantly from camera position */}
+      <group ref={cameraGroupRef}>
+        <PerspectiveCamera makeDefault={true} position={[0, 0, 12]} fov={50} far={100} near={0.1} />
+      </group>
+
       <OrbitControls enablePan={false} enableZoom={false} enabled={orbitEnabled} />
       <ambientLight color={0xffffff} intensity={1} />
       <pointLight intensity={0.2} decay={2} position={[-10, -10, -21]} />
