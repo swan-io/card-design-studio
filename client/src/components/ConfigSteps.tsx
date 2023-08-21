@@ -11,6 +11,7 @@ import { SwanLogo } from "@swan-io/lake/src/components/SwanLogo";
 import { Tile } from "@swan-io/lake/src/components/Tile";
 import { TransitionView } from "@swan-io/lake/src/components/TransitionView";
 import { animations, colors } from "@swan-io/lake/src/constants/design";
+import { useResponsive } from "@swan-io/lake/src/hooks/useResponsive";
 import { isNullish } from "@swan-io/lake/src/utils/nullish";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -41,7 +42,13 @@ const styles = StyleSheet.create({
   startButton: {
     alignSelf: "flex-start",
   },
-  stepContainer: {
+  stepContainerMobile: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  stepContainerDesktop: {
     position: "absolute",
     bottom: 32,
     left: 0,
@@ -49,14 +56,49 @@ const styles = StyleSheet.create({
     width: 512,
     margin: "auto",
   },
-  tile: {
+  tileMobile: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 0,
+  },
+  tileDesktop: {
     paddingVertical: 24,
     paddingHorizontal: 24,
   },
   nameNextButton: {
     alignSelf: "flex-end",
   },
+  editButtonContainer: {
+    position: "absolute",
+    bottom: 32,
+    left: 16,
+    right: 16,
+    maxWidth: 512,
+    margin: "auto",
+  },
 });
+
+type StepTileProps = {
+  visible: boolean;
+  children: React.ReactNode;
+};
+
+const StepTile = ({ visible, children }: StepTileProps) => {
+  const { media } = useResponsive(600);
+
+  return (
+    <TransitionView
+      style={media({ mobile: styles.stepContainerMobile, desktop: styles.stepContainerDesktop })}
+      {...animations.fadeAndSlideInFromTop}
+    >
+      {visible ? (
+        <Tile style={media({ mobile: styles.tileMobile, desktop: styles.tileDesktop })}>
+          {children}
+        </Tile>
+      ) : null}
+    </TransitionView>
+  );
+};
 
 type WelcomeStepProps = {
   visible: boolean;
@@ -113,34 +155,30 @@ type NameStepProps = {
 };
 
 export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps) => (
-  <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromTop}>
-    {visible ? (
-      <Tile style={styles.tile}>
-        <LakeLabel
-          label={t("step.name.label")}
-          render={id => (
-            <LakeTextInput
-              id={id}
-              value={name}
-              placeholder="Roland Moreno"
-              onChangeText={onNameChange}
-            />
-          )}
+  <StepTile visible={visible}>
+    <LakeLabel
+      label={t("step.name.label")}
+      render={id => (
+        <LakeTextInput
+          id={id}
+          value={name}
+          placeholder="Roland Moreno"
+          onChangeText={onNameChange}
         />
+      )}
+    />
 
-        <LakeButton
-          icon="arrow-right-filled"
-          iconPosition="end"
-          color="live"
-          size="small"
-          style={styles.nameNextButton}
-          onPress={onNext}
-        >
-          {t("common.nextStep")}
-        </LakeButton>
-      </Tile>
-    ) : null}
-  </TransitionView>
+    <LakeButton
+      icon="arrow-right-filled"
+      iconPosition="end"
+      color="live"
+      size="small"
+      style={styles.nameNextButton}
+      onPress={onNext}
+    >
+      {t("common.nextStep")}
+    </LakeButton>
+  </StepTile>
 );
 
 type LogoStepProps = {
@@ -163,54 +201,50 @@ export const LogoStep = ({
   onNext,
 }: LogoStepProps) => {
   return (
-    <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromTop}>
-      {visible ? (
-        <Tile style={styles.tile}>
-          <SvgUploadArea logo={logo} onChange={onLogoChange} />
-          <Space height={24} />
+    <StepTile visible={visible}>
+      <SvgUploadArea logo={logo} onChange={onLogoChange} />
+      <Space height={24} />
 
-          <LakeLabel
-            label={t("step.logoSize.label")}
-            render={() => (
-              <Slider
-                disabled={isNullish(logo)}
-                minimum={0}
-                maximum={1}
-                step={0.01}
-                value={logoScale}
-                onValueChange={onLogoScaleChange}
-              />
-            )}
+      <LakeLabel
+        label={t("step.logoSize.label")}
+        render={() => (
+          <Slider
+            disabled={isNullish(logo)}
+            minimum={0}
+            maximum={1}
+            step={0.01}
+            value={logoScale}
+            onValueChange={onLogoScaleChange}
           />
+        )}
+      />
 
-          <Space height={24} />
+      <Space height={24} />
 
-          <Box direction="row" alignItems="center">
-            <LakeButton
-              ariaLabel={t("common.previousStep")}
-              mode="secondary"
-              icon="chevron-left-filled"
-              color="live"
-              size="small"
-              onPress={onPrevious}
-            />
+      <Box direction="row" alignItems="center">
+        <LakeButton
+          ariaLabel={t("common.previousStep")}
+          mode="secondary"
+          icon="chevron-left-filled"
+          color="live"
+          size="small"
+          onPress={onPrevious}
+        />
 
-            <Fill minWidth={8} />
+        <Fill minWidth={8} />
 
-            <LakeButton
-              icon="arrow-right-filled"
-              iconPosition="end"
-              color="live"
-              size="small"
-              disabled={isNullish(logo)}
-              onPress={onNext}
-            >
-              {t("common.nextStep")}
-            </LakeButton>
-          </Box>
-        </Tile>
-      ) : null}
-    </TransitionView>
+        <LakeButton
+          icon="arrow-right-filled"
+          iconPosition="end"
+          color="live"
+          size="small"
+          disabled={isNullish(logo)}
+          onPress={onNext}
+        >
+          {t("common.nextStep")}
+        </LakeButton>
+      </Box>
+    </StepTile>
   );
 };
 
@@ -240,44 +274,38 @@ export const ColorStep = ({
   onPrevious,
   onNext,
 }: ColorStepProps) => (
-  <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromTop}>
-    {visible ? (
-      <Tile style={styles.tile}>
-        <LakeLabel
-          type="radioGroup"
-          label={t("step.color.label")}
-          render={() => (
-            <RadioGroup value={color} items={colorItems} onValueChange={onColorChange} />
-          )}
-        />
+  <StepTile visible={visible}>
+    <LakeLabel
+      type="radioGroup"
+      label={t("step.color.label")}
+      render={() => <RadioGroup value={color} items={colorItems} onValueChange={onColorChange} />}
+    />
 
-        <Space height={24} />
+    <Space height={24} />
 
-        <Box direction="row" alignItems="center">
-          <LakeButton
-            ariaLabel={t("common.previousStep")}
-            mode="secondary"
-            icon="chevron-left-filled"
-            color="live"
-            size="small"
-            onPress={onPrevious}
-          />
+    <Box direction="row" alignItems="center">
+      <LakeButton
+        ariaLabel={t("common.previousStep")}
+        mode="secondary"
+        icon="chevron-left-filled"
+        color="live"
+        size="small"
+        onPress={onPrevious}
+      />
 
-          <Fill minWidth={8} />
+      <Fill minWidth={8} />
 
-          <LakeButton
-            icon="arrow-right-filled"
-            iconPosition="end"
-            color="live"
-            size="small"
-            onPress={onNext}
-          >
-            {t("common.confirm")}
-          </LakeButton>
-        </Box>
-      </Tile>
-    ) : null}
-  </TransitionView>
+      <LakeButton
+        icon="arrow-right-filled"
+        iconPosition="end"
+        color="live"
+        size="small"
+        onPress={onNext}
+      >
+        {t("common.confirm")}
+      </LakeButton>
+    </Box>
+  </StepTile>
 );
 
 type CompletedStepProps = {
@@ -307,7 +335,7 @@ export const CompletedStep = ({
 
   return (
     <>
-      <TransitionView style={styles.stepContainer} {...animations.fadeAndSlideInFromTop}>
+      <TransitionView style={styles.editButtonContainer} {...animations.fadeAndSlideInFromTop}>
         {visible ? (
           <LakeButton color="live" icon="edit-regular" onPress={() => setEditing(true)}>
             {t("step.completed.edit")}
