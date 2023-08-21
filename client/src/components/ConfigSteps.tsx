@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   welcomeStep: {
+    flex: 1,
     maxWidth: 700,
+    paddingHorizontal: 24,
   },
   welcomeSwanLogo: {
     width: 98,
@@ -65,10 +67,15 @@ export const WelcomeStep = ({ visible, onStart }: WelcomeStepProps) => (
   <TransitionView style={styles.welcomeContainer} {...animations.fadeAndSlideInFromTop}>
     {visible ? (
       <View style={styles.welcomeStep}>
-        <Box direction="row" alignItems="center">
-          <SwanLogo style={styles.welcomeSwanLogo} />
-          <Space width={16} />
+        <Space height={24} />
 
+        <Box alignItems="center">
+          <SwanLogo style={styles.welcomeSwanLogo} />
+        </Box>
+
+        <Fill minHeight={24} />
+
+        <Box direction="row" alignItems="center">
           <LakeHeading level={1} variant="h1">
             {t("welcome.title")}
           </LakeHeading>
@@ -91,6 +98,8 @@ export const WelcomeStep = ({ visible, onStart }: WelcomeStepProps) => (
         >
           {t("welcome.button")}
         </LakeButton>
+
+        <Fill minHeight={32} />
       </View>
     ) : null}
   </TransitionView>
