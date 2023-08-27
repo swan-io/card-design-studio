@@ -184,6 +184,7 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
       color="live"
       size="small"
       style={styles.nameNextButton}
+      disabled={name.length === 0}
       onPress={onNext}
     >
       {t("common.nextStep")}
