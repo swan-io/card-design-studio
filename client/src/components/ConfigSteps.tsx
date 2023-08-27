@@ -4,7 +4,10 @@ import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
+import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
+import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
+import { Link } from "@swan-io/lake/src/components/Link";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { Slider } from "@swan-io/lake/src/components/Slider";
 import { Space } from "@swan-io/lake/src/components/Space";
@@ -282,7 +285,7 @@ type ColorStepProps = {
   onNext: () => void;
 };
 
-const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
+const colorItems: RadioGroupItem<CardConfig["color"] | "Custom">[] = [
   {
     name: t("step.color.silver"),
     value: "Silver",
@@ -291,7 +294,13 @@ const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
     name: t("step.color.black"),
     value: "Black",
   },
+  {
+    name: t("step.color.custom"),
+    value: "Custom",
+  },
 ];
+
+const CONTACT_EMAIL = "hello@swan.io";
 
 export const ColorStep = ({
   visible,
@@ -299,40 +308,73 @@ export const ColorStep = ({
   onColorChange,
   onPrevious,
   onNext,
-}: ColorStepProps) => (
-  <StepTile visible={visible}>
-    <LakeLabel
-      type="radioGroup"
-      label={t("step.color.label")}
-      render={() => <RadioGroup value={color} items={colorItems} onValueChange={onColorChange} />}
-    />
+}: ColorStepProps) => {
+  const [customColorModalOpened, setCustomColorModalOpened] = useState(false);
 
-    <Space height={24} />
+  const handleColorChange = (color: CardConfig["color"] | "Custom") => {
+    match(color)
+      .with("Custom", () => setCustomColorModalOpened(true))
+      .otherwise(color => onColorChange(color));
+  };
 
-    <Box direction="row" alignItems="center">
-      <LakeButton
-        ariaLabel={t("common.previousStep")}
-        mode="secondary"
-        icon="chevron-left-filled"
-        color="live"
-        size="small"
-        onPress={onPrevious}
-      />
+  return (
+    <>
+      <StepTile visible={visible}>
+        <LakeLabel
+          type="radioGroup"
+          label={t("step.color.label")}
+          render={() => (
+            <RadioGroup value={color} items={colorItems} onValueChange={handleColorChange} />
+          )}
+        />
 
-      <Fill minWidth={8} />
+        <Space height={24} />
 
-      <LakeButton
-        icon="arrow-right-filled"
-        iconPosition="end"
-        color="live"
-        size="small"
-        onPress={onNext}
+        <Box direction="row" alignItems="center">
+          <LakeButton
+            ariaLabel={t("common.previousStep")}
+            mode="secondary"
+            icon="chevron-left-filled"
+            color="live"
+            size="small"
+            onPress={onPrevious}
+          />
+
+          <Fill minWidth={8} />
+
+          <LakeButton
+            icon="arrow-right-filled"
+            iconPosition="end"
+            color="live"
+            size="small"
+            onPress={onNext}
+          >
+            {t("common.confirm")}
+          </LakeButton>
+        </Box>
+      </StepTile>
+
+      <LakeModal
+        visible={customColorModalOpened}
+        title={t("step.color.customModalTitle")}
+        onPressClose={() => setCustomColorModalOpened(false)}
       >
-        {t("common.confirm")}
-      </LakeButton>
-    </Box>
-  </StepTile>
-);
+        <LakeText>
+          {t("step.color.customModalDescription")}
+
+          <Space width={4} />
+
+          <Link to={`mailto:${CONTACT_EMAIL}`} target="_blank">
+            <LakeText color={colors.live[500]}>{CONTACT_EMAIL}</LakeText>
+          </Link>
+        </LakeText>
+
+        <Space height={4} />
+        <LakeText>{t("step.color.customModalDelay")}</LakeText>
+      </LakeModal>
+    </>
+  );
+};
 
 type CompletedStepProps = {
   visible: boolean;
