@@ -4,3 +4,6 @@ dist
 dist-ssr
 *.local
 .env
+
+# to remove once S3 is setup
+server/uploads
