@@ -1,6 +1,7 @@
 import { LoadingView } from "@swan-io/lake/src/components/LoadingView";
 import { Suspense, lazy, useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { P, match } from "ts-pattern";
 import {
   ColorStep,
   CompletedStep,
@@ -42,48 +43,65 @@ export const App = () => {
         <Card3dScene step={step} ownerName={name} color={color} logo={logo} logoScale={logoScale} />
       </Suspense>
 
-      {route?.name === "Share" && (
-        <ShareOverlay configId={route.params.configId} onLoaded={handleConfigLoaded} />
-      )}
+      {match(route)
+        .with({ name: "Share" }, ({ params }) => (
+          <ShareOverlay
+            configId={params.configId}
+            onStartNewDesign={() => {
+              setName("");
+              setLogo(null);
+              setLogoScale(1);
+              setColor("Silver");
+              Router.push("ConfigCard");
+              setStep("name");
+            }}
+            onLoaded={handleConfigLoaded}
+          />
+        ))
+        .with({ name: "ConfigCard" }, () => (
+          <>
+            <WelcomeStep visible={step === "welcome"} onStart={() => setStep("name")} />
 
-      <WelcomeStep visible={step === "welcome"} onStart={() => setStep("name")} />
+            <NameStep
+              visible={step === "name"}
+              name={name}
+              onNameChange={setName}
+              onNext={() => setStep("logo")}
+            />
 
-      <NameStep
-        visible={step === "name"}
-        name={name}
-        onNameChange={setName}
-        onNext={() => setStep("logo")}
-      />
+            <LogoStep
+              visible={step === "logo"}
+              logo={logo}
+              logoScale={logoScale}
+              onLogoChange={setLogo}
+              onLogoScaleChange={setLogoScale}
+              onPrevious={() => setStep("name")}
+              onNext={() => setStep("color")}
+            />
 
-      <LogoStep
-        visible={step === "logo"}
-        logo={logo}
-        logoScale={logoScale}
-        onLogoChange={setLogo}
-        onLogoScaleChange={setLogoScale}
-        onPrevious={() => setStep("name")}
-        onNext={() => setStep("color")}
-      />
+            <ColorStep
+              visible={step === "color"}
+              color={color}
+              onColorChange={setColor}
+              onPrevious={() => setStep("logo")}
+              onNext={() => setStep("completed")}
+            />
 
-      <ColorStep
-        visible={step === "color"}
-        color={color}
-        onColorChange={setColor}
-        onPrevious={() => setStep("logo")}
-        onNext={() => setStep("completed")}
-      />
-
-      <CompletedStep
-        visible={step === "completed"}
-        ownerName={name}
-        color={color}
-        logo={logo}
-        logoScale={logoScale}
-        onOwnerNameChange={setName}
-        onLogoChange={setLogo}
-        onLogoScaleChange={setLogoScale}
-        onColorChange={setColor}
-      />
+            <CompletedStep
+              visible={step === "completed"}
+              ownerName={name}
+              color={color}
+              logo={logo}
+              logoScale={logoScale}
+              onOwnerNameChange={setName}
+              onLogoChange={setLogo}
+              onLogoScaleChange={setLogoScale}
+              onColorChange={setColor}
+            />
+          </>
+        ))
+        .with(P.nullish, () => null)
+        .exhaustive()}
     </View>
   );
 };
