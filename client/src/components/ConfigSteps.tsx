@@ -21,6 +21,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { P, isMatching, match } from "ts-pattern";
 import { t } from "../utils/i18n";
+import { createSwanLogoSvg } from "../utils/svg";
 import { ConfigRightPanel } from "./ConfigRightPanel";
 import { SvgUploadArea } from "./SvgUploadArea";
 
@@ -199,6 +200,8 @@ type LogoStepProps = {
   onNext: () => void;
 };
 
+const DEFAULT_LOGO_ZOOM = 0.6;
+
 export const LogoStep = ({
   visible,
   logo,
@@ -214,7 +217,7 @@ export const LogoStep = ({
       <Space height={24} />
 
       <LakeLabel
-        label={t("step.logoSize.label")}
+        label={t("step.logo.size.label")}
         render={() => (
           <Slider
             disabled={isNullish(logo)}
@@ -240,6 +243,23 @@ export const LogoStep = ({
         />
 
         <Fill minWidth={8} />
+
+        {isNullish(logo) ? (
+          <LakeButton
+            mode="secondary"
+            color="live"
+            size="small"
+            onPress={() => {
+              const swanLogo = createSwanLogoSvg();
+              onLogoChange(swanLogo);
+              onLogoScaleChange(DEFAULT_LOGO_ZOOM);
+            }}
+          >
+            {t("step.logo.setSwanLogo")}
+          </LakeButton>
+        ) : null}
+
+        <Space width={16} />
 
         <LakeButton
           icon="arrow-right-filled"
