@@ -17,6 +17,7 @@ import type { Card3dAssetsUrls } from "@swan-io/lake/src/components/Card3dPrevie
 import { Card } from "@swan-io/lake/src/components/Card3dPreview";
 import { useEffect, useRef, useState } from "react";
 import { Vector3 } from "three";
+import { match } from "ts-pattern";
 
 const assetsUrls: Card3dAssetsUrls = {
   envNx,
@@ -102,7 +103,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const camera = useThree(state => state.camera);
   const ratioRef = useRef(1);
   const stepRef = useRef(step);
-  const [orbitEnabled] = useState(() => step === "share");
+  const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
 
   // Change camera position on resize
   useThree(({ size }) => {
@@ -111,6 +112,16 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
     const position = getPosition(ratioRef.current);
     camera.position.set(position.x, position.y, position.z);
   });
+
+  useEffect(() => {
+    match(step)
+      .with("completed", "share", () => {
+        setOrbitEnabled(true);
+      })
+      .otherwise(() => {
+        setOrbitEnabled(false);
+      });
+  }, [step]);
 
   // Change camera position and rotation on step change
   useEffect(() => {
