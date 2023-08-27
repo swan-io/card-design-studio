@@ -1,11 +1,7 @@
 import { AsyncData, Result } from "@swan-io/boxed";
 import { Box } from "@swan-io/lake/src/components/Box";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
-import { LakeCopyButton } from "@swan-io/lake/src/components/LakeCopyButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
-import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
-import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
-import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LoadingView } from "@swan-io/lake/src/components/LoadingView";
 import { Space } from "@swan-io/lake/src/components/Space";
 import { colors } from "@swan-io/lake/src/constants/design";
@@ -15,6 +11,7 @@ import { match } from "ts-pattern";
 import { Except } from "type-fest";
 import { t } from "../utils/i18n";
 import { convertStringToSvg } from "../utils/svg";
+import { ShareModal } from "./ShareModal";
 
 const styles = StyleSheet.create({
   container: {
@@ -116,11 +113,8 @@ export const ShareOverlay = ({ configId, onStartNewDesign, onLoaded }: Props) =>
   });
 };
 
-const getSharedLink = (configId: string) => `${window.location.origin}/share/${configId}`;
-
 const ShareOverlayContent = ({ configId, onStartNewDesign }: Except<Props, "onLoaded">) => {
   const [shareModalOpened, setShareModalOpened] = useState(false);
-  const sharedLink = getSharedLink(configId);
 
   return (
     <>
@@ -149,25 +143,11 @@ const ShareOverlayContent = ({ configId, onStartNewDesign }: Except<Props, "onLo
         </LakeButton>
       </Box>
 
-      <LakeModal
+      <ShareModal
         visible={shareModalOpened}
-        title={t("step.completed.shareModalTitle")}
+        configId={configId}
         onPressClose={() => setShareModalOpened(false)}
-      >
-        <LakeLabel
-          label={t("step.completed.shareLink")}
-          type="view"
-          color="live"
-          render={() => <LakeText color={colors.gray[900]}>{sharedLink}</LakeText>}
-          actions={
-            <LakeCopyButton
-              valueToCopy={sharedLink}
-              copyText={t("copyButton.copyTooltip")}
-              copiedText={t("copyButton.copiedTooltip")}
-            />
-          }
-        />
-      </LakeModal>
+      />
     </>
   );
 };
