@@ -6,7 +6,7 @@ import path from "node:path";
 import { z } from "zod";
 
 export const cardConfigSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1),
   logo: z.string(),
   logoScale: z.number().min(0).max(1),
   color: z.union([z.literal("Silver"), z.literal("Black")]),
