@@ -1,8 +1,12 @@
+import { AsyncData, Option, Result } from "@swan-io/boxed";
 import { Box } from "@swan-io/lake/src/components/Box";
 import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
+import { LakeCopyButton } from "@swan-io/lake/src/components/LakeCopyButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
+import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
+import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { Slider } from "@swan-io/lake/src/components/Slider";
@@ -15,6 +19,7 @@ import { useResponsive } from "@swan-io/lake/src/hooks/useResponsive";
 import { isNullish } from "@swan-io/lake/src/utils/nullish";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { P, isMatching, match } from "ts-pattern";
 import { t } from "../utils/i18n";
 import { ConfigRightPanel } from "./ConfigRightPanel";
 import { SvgUploadArea } from "./SvgUploadArea";
@@ -75,6 +80,9 @@ const styles = StyleSheet.create({
     right: 16,
     maxWidth: 512,
     margin: "auto",
+  },
+  grow: {
+    flex: 1,
   },
 });
 
@@ -320,6 +328,8 @@ type CompletedStepProps = {
   onLogoScaleChange: (logoScale: number) => void;
 };
 
+const getSharedLink = (configId: string) => `${window.location.origin}/share/${configId}`;
+
 export const CompletedStep = ({
   visible,
   ownerName,
@@ -332,16 +342,104 @@ export const CompletedStep = ({
   onLogoScaleChange,
 }: CompletedStepProps) => {
   const [editing, setEditing] = useState(false);
+  const [shareState, setShareState] = useState<AsyncData<Result<{ configId: string }, unknown>>>(
+    AsyncData.NotAsked(),
+  );
+  const [shareModalClosed, setShareModalClosed] = useState(false);
+
+  const sharedLink = match(shareState)
+    .with(AsyncData.P.Done(Result.P.Ok(P.select())), ({ configId }) =>
+      Option.Some(getSharedLink(configId)),
+    )
+    .otherwise(() => Option.None());
+
+  const shareConfig = () => {
+    // if config is already uploaded, just show the link without uploading again
+    if (sharedLink.isSome()) {
+      setShareModalClosed(false);
+      return;
+    }
+
+    setShareState(AsyncData.Loading());
+
+    fetch("/api/config", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: ownerName,
+        color,
+        logo: logo?.outerHTML,
+        logoScale,
+      }),
+    })
+      .then(async response => {
+        const data = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+
+        if (isMatching({ configId: P.string }, data)) {
+          setShareState(AsyncData.Done(Result.Ok(data)));
+        } else {
+          setShareState(AsyncData.Done(Result.Error(data)));
+        }
+      })
+      .catch(error => {
+        setShareState(AsyncData.Done(Result.Error(error)));
+      });
+  };
 
   return (
     <>
       <TransitionView style={styles.editButtonContainer} {...animations.fadeAndSlideInFromTop}>
         {visible ? (
-          <LakeButton color="live" icon="edit-regular" onPress={() => setEditing(true)}>
-            {t("step.completed.edit")}
-          </LakeButton>
+          <Box direction="row">
+            <LakeButton
+              color="live"
+              mode="secondary"
+              icon="edit-regular"
+              disabled={shareState.isLoading()}
+              style={styles.grow}
+              onPress={() => setEditing(true)}
+            >
+              {t("step.completed.edit")}
+            </LakeButton>
+
+            <Space width={16} />
+
+            <LakeButton
+              color="live"
+              icon="arrow-upload-filled"
+              style={styles.grow}
+              loading={shareState.isLoading()}
+              onPress={shareConfig}
+            >
+              {t("step.completed.share")}
+            </LakeButton>
+          </Box>
         ) : null}
       </TransitionView>
+
+      <LakeModal
+        visible={!shareModalClosed && sharedLink.isSome()}
+        title={t("step.completed.shareModalTitle")}
+        onPressClose={() => setShareModalClosed(true)}
+      >
+        <LakeLabel
+          label={t("step.completed.shareLink")}
+          type="view"
+          color="live"
+          render={() => (
+            <LakeText color={colors.gray[900]}>{sharedLink.getWithDefault("")}</LakeText>
+          )}
+          actions={
+            <LakeCopyButton
+              valueToCopy={sharedLink.getWithDefault("")}
+              copyText={t("copyButton.copyTooltip")}
+              copiedText={t("copyButton.copiedTooltip")}
+            />
+          }
+        />
+      </LakeModal>
 
       <ConfigRightPanel
         visible={editing}
