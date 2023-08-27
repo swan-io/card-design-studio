@@ -17,7 +17,6 @@ import type { Card3dAssetsUrls } from "@swan-io/lake/src/components/Card3dPrevie
 import { Card } from "@swan-io/lake/src/components/Card3dPreview";
 import { useEffect, useRef, useState } from "react";
 import { Vector3 } from "three";
-import { match } from "ts-pattern";
 
 const assetsUrls: Card3dAssetsUrls = {
   envNx,
@@ -106,32 +105,34 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
 
   // Change camera position on resize
-  useThree(({ size }) => {
-    ratioRef.current = size.width / size.height;
-    const { getPosition } = cameraPositions[stepRef.current];
-    const position = getPosition(ratioRef.current);
-    camera.position.set(position.x, position.y, position.z);
-  });
-
   useEffect(() => {
-    match(step)
-      .with("completed", "share", () => {
-        setOrbitEnabled(true);
-      })
-      .otherwise(() => {
-        setOrbitEnabled(false);
-      });
-  }, [step]);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      ratioRef.current = width / height;
+
+      const { getPosition } = cameraPositions[stepRef.current];
+      const position = getPosition(ratioRef.current);
+      camera.position.set(position.x, position.y, position.z);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 
   // Change camera position and rotation on step change
   useEffect(() => {
     stepRef.current = step;
+    setOrbitEnabled(step === "completed" || step === "share");
+
     const { getPosition, rotation } = cameraPositions[stepRef.current];
     const position = getPosition(ratioRef.current);
+    camera.rotation.set(0, 0, 0);
     camera.position.set(position.x, position.y, position.z);
     cameraGroupRef.current?.rotation.set(rotation.x, rotation.y, rotation.z);
-
-    // setOrbitEnabled(step === "completed" || step === "share");
   }, [step, camera]);
 
   return (
