@@ -1,4 +1,7 @@
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
+import { LakeText } from "@swan-io/lake/src/components/LakeText";
+import { Link } from "@swan-io/lake/src/components/Link";
+import { colors } from "@swan-io/lake/src/constants/design";
 import { UploadArea } from "@swan-io/shared-business/src/components/UploadArea";
 import { useState } from "react";
 import { t } from "../utils/i18n";
@@ -46,6 +49,11 @@ export const SvgUploadArea = ({ logo, onChange }: Props) => {
           value={logo ?? undefined}
         />
       )}
+      help={
+        <Link to="https://docs.swan.io/help/faq/cards" target="_blank">
+          <LakeText color={colors.live[500]}>{t("step.logo.help")}</LakeText>
+        </Link>
+      }
     />
   );
 };
