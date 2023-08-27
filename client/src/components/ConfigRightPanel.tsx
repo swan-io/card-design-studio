@@ -79,7 +79,7 @@ export const ConfigRightPanel = ({
       <Space height={24} />
 
       <LakeLabel
-        label={t("step.logoSize.label")}
+        label={t("step.logo.size.label")}
         render={() => (
           <Slider
             minimum={0}
