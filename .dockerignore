@@ -1,4 +1,7 @@
 .env
-./node_modules/**
+node_modules/**
 *./node_modules/**
-./server/dist/**
+server/dist/**
+
+# to remove once S3 is setup
+server/uploads/*
