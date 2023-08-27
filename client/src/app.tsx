@@ -1,5 +1,5 @@
 import { LoadingView } from "@swan-io/lake/src/components/LoadingView";
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   ColorStep,
@@ -29,6 +29,13 @@ export const App = () => {
   const [logoScale, setLogoScale] = useState(1);
   const [color, setColor] = useState<CardConfig["color"]>("Silver");
 
+  const handleConfigLoaded = useCallback((config: CardConfig) => {
+    setName(config.name);
+    setColor(config.color);
+    setLogo(config.logo);
+    setLogoScale(config.logoScale);
+  }, []);
+
   return (
     <View style={styles.container}>
       <Suspense fallback={<LoadingView />}>
@@ -36,15 +43,7 @@ export const App = () => {
       </Suspense>
 
       {route?.name === "Share" && (
-        <ShareOverlay
-          configId={route.params.configId}
-          onLoaded={config => {
-            setName(config.name);
-            setColor(config.color);
-            setLogo(config.logo);
-            setLogoScale(config.logoScale);
-          }}
-        />
+        <ShareOverlay configId={route.params.configId} onLoaded={handleConfigLoaded} />
       )}
 
       <WelcomeStep visible={step === "welcome"} onStart={() => setStep("name")} />
