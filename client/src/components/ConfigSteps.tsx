@@ -2,11 +2,8 @@ import { AsyncData, Option, Result } from "@swan-io/boxed";
 import { Box } from "@swan-io/lake/src/components/Box";
 import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
-import { LakeCopyButton } from "@swan-io/lake/src/components/LakeCopyButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
-import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
-import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { Slider } from "@swan-io/lake/src/components/Slider";
@@ -23,6 +20,7 @@ import { P, isMatching, match } from "ts-pattern";
 import { t } from "../utils/i18n";
 import { createSwanLogoSvg } from "../utils/svg";
 import { ConfigRightPanel } from "./ConfigRightPanel";
+import { ShareModal } from "./ShareModal";
 import { SvgUploadArea } from "./SvgUploadArea";
 
 const styles = StyleSheet.create({
@@ -348,8 +346,6 @@ type CompletedStepProps = {
   onLogoScaleChange: (logoScale: number) => void;
 };
 
-const getSharedLink = (configId: string) => `${window.location.origin}/share/${configId}`;
-
 export const CompletedStep = ({
   visible,
   ownerName,
@@ -367,15 +363,13 @@ export const CompletedStep = ({
   );
   const [shareModalClosed, setShareModalClosed] = useState(false);
 
-  const sharedLink = match(shareState)
-    .with(AsyncData.P.Done(Result.P.Ok(P.select())), ({ configId }) =>
-      Option.Some(getSharedLink(configId)),
-    )
+  const configId = match(shareState)
+    .with(AsyncData.P.Done(Result.P.Ok(P.select())), ({ configId }) => Option.Some(configId))
     .otherwise(() => Option.None());
 
   const shareConfig = () => {
     // if config is already uploaded, just show the link without uploading again
-    if (sharedLink.isSome()) {
+    if (configId.isSome()) {
       setShareModalClosed(false);
       return;
     }
@@ -439,27 +433,11 @@ export const CompletedStep = ({
         ) : null}
       </TransitionView>
 
-      <LakeModal
-        visible={!shareModalClosed && sharedLink.isSome()}
-        title={t("step.completed.shareModalTitle")}
+      <ShareModal
+        visible={!shareModalClosed && configId.isSome()}
+        configId={configId.getWithDefault("")}
         onPressClose={() => setShareModalClosed(true)}
-      >
-        <LakeLabel
-          label={t("step.completed.shareLink")}
-          type="view"
-          color="live"
-          render={() => (
-            <LakeText color={colors.gray[900]}>{sharedLink.getWithDefault("")}</LakeText>
-          )}
-          actions={
-            <LakeCopyButton
-              valueToCopy={sharedLink.getWithDefault("")}
-              copyText={t("copyButton.copyTooltip")}
-              copiedText={t("copyButton.copiedTooltip")}
-            />
-          }
-        />
-      </LakeModal>
+      />
 
       <ConfigRightPanel
         visible={editing}
