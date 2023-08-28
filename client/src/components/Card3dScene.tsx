@@ -16,7 +16,9 @@ import colorSilver from "@swan-io/lake/src/assets/3d-card/model/color_silver.jpg
 import type { Card3dAssetsUrls } from "@swan-io/lake/src/components/Card3dPreview";
 import { Card } from "@swan-io/lake/src/components/Card3dPreview";
 import { useEffect, useRef, useState } from "react";
-import { Vector3 } from "three";
+import { Euler, Vector3 } from "three";
+import { Animation, animate } from "../utils/animation";
+import { easeOutExpo } from "../utils/easings";
 
 const assetsUrls: Card3dAssetsUrls = {
   envNx,
@@ -104,6 +106,17 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const stepRef = useRef(step);
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
 
+  const cameraPositionAnimation = useRef<Animation<Vector3>>();
+  const cameraRotationAnimation = useRef<Animation<Euler>>();
+
+  useEffect(() => {
+    cameraPositionAnimation.current = animate(camera.position);
+
+    if (cameraGroupRef.current) {
+      cameraPositionAnimation.current = animate(cameraGroupRef.current.rotation);
+    }
+  }, []);
+
   // Change camera position on resize
   useEffect(() => {
     const handleResize = () => {
@@ -126,14 +139,33 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   // Change camera position and rotation on step change
   useEffect(() => {
     stepRef.current = step;
-    setOrbitEnabled(step === "completed" || step === "share");
 
     const { getPosition, rotation } = cameraPositions[stepRef.current];
     const position = getPosition(ratioRef.current);
-    camera.rotation.set(0, 0, 0);
-    camera.position.set(position.x, position.y, position.z);
-    cameraGroupRef.current?.rotation.set(rotation.x, rotation.y, rotation.z);
-  }, [step, camera]);
+
+    cameraPositionAnimation.current?.start({
+      duration: 1500,
+      easing: easeOutExpo,
+      to: {
+        x: position.x,
+        y: position.y,
+        z: position.z,
+      },
+      onComplete: () => {
+        // we re-enable orbitControls after animation
+        setOrbitEnabled(step === "completed" || step === "share");
+      },
+    });
+    cameraRotationAnimation.current?.start({
+      duration: 1500,
+      easing: easeOutExpo,
+      to: {
+        x: rotation.x,
+        y: rotation.y,
+        z: rotation.z,
+      },
+    });
+  }, [step, cameraPositionAnimation, cameraRotationAnimation]);
 
   return (
     <>
