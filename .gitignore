@@ -4,6 +4,7 @@ dist
 dist-ssr
 *.local
 .env
+locale.config.js
 
 # to remove once S3 is setup
 server/uploads
