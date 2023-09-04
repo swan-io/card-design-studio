@@ -24,6 +24,7 @@
   "step.color.customModalDelay": "Delivery for custom designs takes about 16 weeks.",
   "step.completed.edit": "Edit design",
   "step.completed.share": "Share design",
+  "step.completed.shareError": "Failed to save the card configuration. Please try again.",
   "rightPanel.title": "Card design settings",
   "rightPanel.close": "Close",
   "share.failedToLoad.title": "Failed to load the card configuration.",
