@@ -2,6 +2,7 @@ import replyFrom from "@fastify/reply-from";
 import sensible from "@fastify/sensible";
 import fastifyStatic from "@fastify/static";
 import fastify from "fastify";
+import fs from "fs";
 import path from "pathe";
 import { createViteDevServer } from "./client/devServer";
 import { cardConfigSchema, getCardConfig, saveCardConfig } from "./utils/cardConfig";
@@ -56,8 +57,16 @@ const start = async () => {
       return reply.from(`${base}${request.url}`);
     });
   } else {
+    const assetsPath = path.join(__dirname, "./assets");
+    const indexHtmlPath = path.join(assetsPath, "./index.html");
+
     await app.register(fastifyStatic, {
-      root: path.join(__dirname, "./assets"),
+      root: assetsPath,
+    });
+
+    app.setNotFoundHandler(async (request, reply) => {
+      const stream = fs.createReadStream(indexHtmlPath);
+      return reply.type("text/html").send(stream);
     });
   }
 
