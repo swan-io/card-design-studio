@@ -27,7 +27,7 @@ export const App = () => {
     route?.name === "Share" ? "share" : "welcome",
   );
   const [name, setName] = useState("");
-  const [logo, setLogo] = useState<SVGElement | null>(null);
+  const [logo, setLogo] = useState<SVGElement | HTMLImageElement | null>(null);
   const [logoScale, setLogoScale] = useState(1);
   const [color, setColor] = useState<CardConfig["color"]>("Silver");
 

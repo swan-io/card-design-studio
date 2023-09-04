@@ -10,7 +10,7 @@
   "step.name.label": "Card holder name",
   "step.name.info": "We won't save this information. This preview is just for you, so you can pick any name you want!",
   "step.logo.label": "Card logo",
-  "step.logo.description": "Only SVG files are supported.",
+  "step.logo.description": "SVG and PNG files are supported.",
   "step.logo.error": "Failed to load the logo. Please try again.",
   "step.logo.help": "Having trouble with your logo?",
   "step.logo.size.label": "Logo size",
