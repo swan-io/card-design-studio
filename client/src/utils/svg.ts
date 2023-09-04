@@ -5,12 +5,22 @@ import { match } from "ts-pattern";
 
 const BASE64_URI_PREFIX = "data:image/svg+xml;base64,";
 
+export const convertPngFileToBase64Uri = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = event => {
+      if (typeof event.target?.result !== "string") {
+        return reject("No content");
+      }
+      resolve(event.target.result);
+    };
+
+    reader.readAsDataURL(file);
+  });
+
 export const convertSvgFileToString = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
-    if (file.type !== "image/svg+xml") {
-      reject("Bad format");
-    }
-
     const reader = new FileReader();
 
     reader.onload = event => {
