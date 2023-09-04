@@ -1,4 +1,5 @@
 import { LoadingView } from "@swan-io/lake/src/components/LoadingView";
+import { ToastStack } from "@swan-io/lake/src/components/ToastStack";
 import { Suspense, lazy, useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { P, match } from "ts-pattern";
@@ -38,70 +39,80 @@ export const App = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Suspense fallback={<LoadingView />}>
-        <Card3dScene step={step} ownerName={name} color={color} logo={logo} logoScale={logoScale} />
-      </Suspense>
-
-      {match(route)
-        .with({ name: "Share" }, ({ params }) => (
-          <ShareOverlay
-            configId={params.configId}
-            onStartNewDesign={() => {
-              setName("");
-              setLogo(null);
-              setLogoScale(1);
-              setColor("Silver");
-              Router.push("ConfigCard");
-              setStep("name");
-            }}
-            onLoaded={handleConfigLoaded}
+    <>
+      <View style={styles.container}>
+        <Suspense fallback={<LoadingView />}>
+          <Card3dScene
+            step={step}
+            ownerName={name}
+            color={color}
+            logo={logo}
+            logoScale={logoScale}
           />
-        ))
-        .with({ name: "ConfigCard" }, () => (
-          <>
-            <WelcomeStep visible={step === "welcome"} onStart={() => setStep("name")} />
+        </Suspense>
 
-            <NameStep
-              visible={step === "name"}
-              name={name}
-              onNameChange={setName}
-              onNext={() => setStep("logo")}
+        {match(route)
+          .with({ name: "Share" }, ({ params }) => (
+            <ShareOverlay
+              configId={params.configId}
+              onStartNewDesign={() => {
+                setName("");
+                setLogo(null);
+                setLogoScale(1);
+                setColor("Silver");
+                Router.push("ConfigCard");
+                setStep("name");
+              }}
+              onLoaded={handleConfigLoaded}
             />
+          ))
+          .with({ name: "ConfigCard" }, () => (
+            <>
+              <WelcomeStep visible={step === "welcome"} onStart={() => setStep("name")} />
 
-            <LogoStep
-              visible={step === "logo"}
-              logo={logo}
-              logoScale={logoScale}
-              onLogoChange={setLogo}
-              onLogoScaleChange={setLogoScale}
-              onPrevious={() => setStep("name")}
-              onNext={() => setStep("color")}
-            />
+              <NameStep
+                visible={step === "name"}
+                name={name}
+                onNameChange={setName}
+                onNext={() => setStep("logo")}
+              />
 
-            <ColorStep
-              visible={step === "color"}
-              color={color}
-              onColorChange={setColor}
-              onPrevious={() => setStep("logo")}
-              onNext={() => setStep("completed")}
-            />
+              <LogoStep
+                visible={step === "logo"}
+                logo={logo}
+                logoScale={logoScale}
+                onLogoChange={setLogo}
+                onLogoScaleChange={setLogoScale}
+                onPrevious={() => setStep("name")}
+                onNext={() => setStep("color")}
+              />
 
-            <CompletedStep
-              visible={step === "completed"}
-              ownerName={name}
-              color={color}
-              logo={logo}
-              logoScale={logoScale}
-              onOwnerNameChange={setName}
-              onLogoChange={setLogo}
-              onLogoScaleChange={setLogoScale}
-              onColorChange={setColor}
-            />
-          </>
-        ))
-        .with(P.nullish, () => null)
-        .exhaustive()}
-    </View>
+              <ColorStep
+                visible={step === "color"}
+                color={color}
+                onColorChange={setColor}
+                onPrevious={() => setStep("logo")}
+                onNext={() => setStep("completed")}
+              />
+
+              <CompletedStep
+                visible={step === "completed"}
+                ownerName={name}
+                color={color}
+                logo={logo}
+                logoScale={logoScale}
+                onOwnerNameChange={setName}
+                onLogoChange={setLogo}
+                onLogoScaleChange={setLogoScale}
+                onColorChange={setColor}
+              />
+            </>
+          ))
+          .with(P.nullish, () => null)
+          .exhaustive()}
+      </View>
+
+      <ToastStack />
+    </>
   );
 };

@@ -16,6 +16,7 @@ import { Tile } from "@swan-io/lake/src/components/Tile";
 import { TransitionView } from "@swan-io/lake/src/components/TransitionView";
 import { animations, colors } from "@swan-io/lake/src/constants/design";
 import { useResponsive } from "@swan-io/lake/src/hooks/useResponsive";
+import { showToast } from "@swan-io/lake/src/state/toasts";
 import { isNullish } from "@swan-io/lake/src/utils/nullish";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -438,10 +439,12 @@ export const CompletedStep = ({
           setShareState(AsyncData.Done(Result.Ok(data)));
         } else {
           setShareState(AsyncData.Done(Result.Error(data)));
+          showToast({ variant: "error", title: t("step.completed.shareError") });
         }
       })
       .catch(error => {
         setShareState(AsyncData.Done(Result.Error(error)));
+        showToast({ variant: "error", title: t("step.completed.shareError") });
       });
   };
 
