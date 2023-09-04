@@ -25,8 +25,8 @@ import { trackClickEvent } from "../utils/googleTagManager";
 import { t } from "../utils/i18n";
 import { createSwanLogoSvg } from "../utils/svg";
 import { ConfigRightPanel } from "./ConfigRightPanel";
+import { LogoUploadArea } from "./LogoUploadArea";
 import { ShareModal } from "./ShareModal";
-import { SvgUploadArea } from "./SvgUploadArea";
 import { TrackPressable } from "./TrackPressable";
 
 const styles = StyleSheet.create({
@@ -201,9 +201,9 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
 
 type LogoStepProps = {
   visible: boolean;
-  logo: SVGElement | null;
+  logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
-  onLogoChange: (logo: SVGElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
   onLogoScaleChange: (logoScale: number) => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -222,7 +222,7 @@ export const LogoStep = ({
 }: LogoStepProps) => {
   return (
     <StepTile visible={visible}>
-      <SvgUploadArea logo={logo} onChange={onLogoChange} />
+      <LogoUploadArea logo={logo} onChange={onLogoChange} />
       <Space height={24} />
 
       <LakeLabel
@@ -401,11 +401,11 @@ type CompletedStepProps = {
   visible: boolean;
   ownerName: string;
   color: CardConfig["color"];
-  logo: SVGElement | null;
+  logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
   onOwnerNameChange: (ownerName: string) => void;
   onColorChange: (color: CardConfig["color"]) => void;
-  onLogoChange: (logo: SVGElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
   onLogoScaleChange: (logoScale: number) => void;
 };
 

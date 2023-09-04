@@ -86,7 +86,7 @@ type Props = {
   step: ConfigStep;
   ownerName: string;
   color: CardConfig["color"];
-  logo: SVGElement | null;
+  logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
 };
 

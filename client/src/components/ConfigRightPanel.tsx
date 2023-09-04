@@ -10,7 +10,7 @@ import { Slider } from "@swan-io/lake/src/components/Slider";
 import { Space } from "@swan-io/lake/src/components/Space";
 import { StyleSheet, View } from "react-native";
 import { t } from "../utils/i18n";
-import { SvgUploadArea } from "./SvgUploadArea";
+import { LogoUploadArea } from "./LogoUploadArea";
 import { TrackPressable } from "./TrackPressable";
 
 const styles = StyleSheet.create({
@@ -24,11 +24,11 @@ type Props = {
   visible: boolean;
   ownerName: string;
   color: CardConfig["color"];
-  logo: SVGElement | null;
+  logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
   onOwnerNameChange: (ownerName: string) => void;
   onColorChange: (color: CardConfig["color"]) => void;
-  onLogoChange: (logo: SVGElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
   onLogoScaleChange: (logoScale: number) => void;
   onClose: () => void;
 };
@@ -76,7 +76,7 @@ export const ConfigRightPanel = ({
         )}
       />
 
-      <SvgUploadArea logo={logo} onChange={onLogoChange} />
+      <LogoUploadArea logo={logo} onChange={onLogoChange} />
       <Space height={24} />
 
       <LakeLabel
