@@ -12,6 +12,7 @@ import { Except } from "type-fest";
 import { t } from "../utils/i18n";
 import { convertStringToSvg } from "../utils/svg";
 import { ShareModal } from "./ShareModal";
+import { TrackPressable } from "./TrackPressable";
 
 const styles = StyleSheet.create({
   container: {
@@ -119,28 +120,32 @@ const ShareOverlayContent = ({ configId, onStartNewDesign }: Except<Props, "onLo
   return (
     <>
       <Box direction="row" style={styles.buttonsContainer}>
-        <LakeButton
-          color="live"
-          mode="secondary"
-          icon="edit-regular"
-          style={styles.grow}
-          onPress={onStartNewDesign}
-        >
-          {t("share.createNewDesign")}
-        </LakeButton>
+        <TrackPressable name="share.create-new-design">
+          <LakeButton
+            color="live"
+            mode="secondary"
+            icon="edit-regular"
+            style={styles.grow}
+            onPress={onStartNewDesign}
+          >
+            {t("share.createNewDesign")}
+          </LakeButton>
+        </TrackPressable>
 
         <Space width={16} />
 
-        <LakeButton
-          color="live"
-          icon="arrow-upload-filled"
-          style={styles.grow}
-          onPress={() => {
-            setShareModalOpened(true);
-          }}
-        >
-          {t("share.shareDesign")}
-        </LakeButton>
+        <TrackPressable name="share.share-design">
+          <LakeButton
+            color="live"
+            icon="arrow-upload-filled"
+            style={styles.grow}
+            onPress={() => {
+              setShareModalOpened(true);
+            }}
+          >
+            {t("share.shareDesign")}
+          </LakeButton>
+        </TrackPressable>
       </Box>
 
       <ShareModal
@@ -168,18 +173,20 @@ const CardNotFound = () => {
 
         <Space height={16} />
 
-        <LakeButton
-          color="live"
-          size="small"
-          icon="arrow-counterclockwise-filled"
-          iconPosition="end"
-          style={styles.reloadButton}
-          onPress={() => {
-            window.location.reload();
-          }}
-        >
-          {t("share.failedToLoad.reload")}
-        </LakeButton>
+        <TrackPressable name="share.reload-after-failure">
+          <LakeButton
+            color="live"
+            size="small"
+            icon="arrow-counterclockwise-filled"
+            iconPosition="end"
+            style={styles.reloadButton}
+            onPress={() => {
+              window.location.reload();
+            }}
+          >
+            {t("share.failedToLoad.reload")}
+          </LakeButton>
+        </TrackPressable>
       </View>
     </View>
   );
