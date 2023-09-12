@@ -21,11 +21,13 @@ import { isNullish } from "@swan-io/lake/src/utils/nullish";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { P, isMatching, match } from "ts-pattern";
+import { trackClickEvent } from "../utils/googleTagManager";
 import { t } from "../utils/i18n";
 import { createSwanLogoSvg } from "../utils/svg";
 import { ConfigRightPanel } from "./ConfigRightPanel";
 import { ShareModal } from "./ShareModal";
 import { SvgUploadArea } from "./SvgUploadArea";
+import { TrackPressable } from "./TrackPressable";
 
 const styles = StyleSheet.create({
   welcomeContainer: {
@@ -142,15 +144,17 @@ export const WelcomeStep = ({ visible, onStart }: WelcomeStepProps) => (
 
         <Space height={32} />
 
-        <LakeButton
-          color="live"
-          icon="arrow-right-filled"
-          iconPosition="end"
-          style={styles.startButton}
-          onPress={onStart}
-        >
-          {t("welcome.button")}
-        </LakeButton>
+        <TrackPressable name="welcome.start">
+          <LakeButton
+            color="live"
+            icon="arrow-right-filled"
+            iconPosition="end"
+            style={styles.startButton}
+            onPress={onStart}
+          >
+            {t("welcome.button")}
+          </LakeButton>
+        </TrackPressable>
 
         <Fill minHeight={32} />
       </View>
@@ -179,17 +183,19 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
       )}
     />
 
-    <LakeButton
-      icon="arrow-right-filled"
-      iconPosition="end"
-      color="live"
-      size="small"
-      style={styles.nameNextButton}
-      disabled={name.length === 0}
-      onPress={onNext}
-    >
-      {t("common.nextStep")}
-    </LakeButton>
+    <TrackPressable name="name.next">
+      <LakeButton
+        icon="arrow-right-filled"
+        iconPosition="end"
+        color="live"
+        size="small"
+        style={styles.nameNextButton}
+        disabled={name.length === 0}
+        onPress={onNext}
+      >
+        {t("common.nextStep")}
+      </LakeButton>
+    </TrackPressable>
   </StepTile>
 );
 
@@ -236,44 +242,50 @@ export const LogoStep = ({
       <Space height={24} />
 
       <Box direction="row" alignItems="center">
-        <LakeButton
-          ariaLabel={t("common.previousStep")}
-          mode="secondary"
-          icon="chevron-left-filled"
-          color="live"
-          size="small"
-          onPress={onPrevious}
-        />
+        <TrackPressable name="logo.previous">
+          <LakeButton
+            ariaLabel={t("common.previousStep")}
+            mode="secondary"
+            icon="chevron-left-filled"
+            color="live"
+            size="small"
+            onPress={onPrevious}
+          />
+        </TrackPressable>
 
         <Fill minWidth={8} />
 
         {isNullish(logo) ? (
-          <LakeButton
-            mode="secondary"
-            color="live"
-            size="small"
-            onPress={() => {
-              const swanLogo = createSwanLogoSvg();
-              onLogoChange(swanLogo);
-              onLogoScaleChange(DEFAULT_LOGO_ZOOM);
-            }}
-          >
-            {t("step.logo.setSwanLogo")}
-          </LakeButton>
+          <TrackPressable name="logo.set-swan-logo">
+            <LakeButton
+              mode="secondary"
+              color="live"
+              size="small"
+              onPress={() => {
+                const swanLogo = createSwanLogoSvg();
+                onLogoChange(swanLogo);
+                onLogoScaleChange(DEFAULT_LOGO_ZOOM);
+              }}
+            >
+              {t("step.logo.setSwanLogo")}
+            </LakeButton>
+          </TrackPressable>
         ) : null}
 
         <Space width={16} />
 
-        <LakeButton
-          icon="arrow-right-filled"
-          iconPosition="end"
-          color="live"
-          size="small"
-          disabled={isNullish(logo)}
-          onPress={onNext}
-        >
-          {t("common.nextStep")}
-        </LakeButton>
+        <TrackPressable name="logo.next">
+          <LakeButton
+            icon="arrow-right-filled"
+            iconPosition="end"
+            color="live"
+            size="small"
+            disabled={isNullish(logo)}
+            onPress={onNext}
+          >
+            {t("common.nextStep")}
+          </LakeButton>
+        </TrackPressable>
       </Box>
     </StepTile>
   );
@@ -315,7 +327,10 @@ export const ColorStep = ({
 
   const handleColorChange = (color: CardConfig["color"] | "Custom") => {
     match(color)
-      .with("Custom", () => setCustomColorModalOpened(true))
+      .with("Custom", () => {
+        setCustomColorModalOpened(true);
+        trackClickEvent("color.custom");
+      })
       .otherwise(color => onColorChange(color));
   };
 
@@ -333,26 +348,30 @@ export const ColorStep = ({
         <Space height={24} />
 
         <Box direction="row" alignItems="center">
-          <LakeButton
-            ariaLabel={t("common.previousStep")}
-            mode="secondary"
-            icon="chevron-left-filled"
-            color="live"
-            size="small"
-            onPress={onPrevious}
-          />
+          <TrackPressable name="color.previous">
+            <LakeButton
+              ariaLabel={t("common.previousStep")}
+              mode="secondary"
+              icon="chevron-left-filled"
+              color="live"
+              size="small"
+              onPress={onPrevious}
+            />
+          </TrackPressable>
 
           <Fill minWidth={8} />
 
-          <LakeButton
-            icon="arrow-right-filled"
-            iconPosition="end"
-            color="live"
-            size="small"
-            onPress={onNext}
-          >
-            {t("common.confirm")}
-          </LakeButton>
+          <TrackPressable name="color.next">
+            <LakeButton
+              icon="arrow-right-filled"
+              iconPosition="end"
+              color="live"
+              size="small"
+              onPress={onNext}
+            >
+              {t("common.confirm")}
+            </LakeButton>
+          </TrackPressable>
         </Box>
       </StepTile>
 
@@ -453,28 +472,32 @@ export const CompletedStep = ({
       <TransitionView style={styles.editButtonContainer} {...animations.fadeAndSlideInFromTop}>
         {visible ? (
           <Box direction="row">
-            <LakeButton
-              color="live"
-              mode="secondary"
-              icon="edit-regular"
-              disabled={shareState.isLoading()}
-              style={styles.grow}
-              onPress={() => setEditing(true)}
-            >
-              {t("step.completed.edit")}
-            </LakeButton>
+            <TrackPressable name="completed.edit">
+              <LakeButton
+                color="live"
+                mode="secondary"
+                icon="edit-regular"
+                disabled={shareState.isLoading()}
+                style={styles.grow}
+                onPress={() => setEditing(true)}
+              >
+                {t("step.completed.edit")}
+              </LakeButton>
+            </TrackPressable>
 
             <Space width={16} />
 
-            <LakeButton
-              color="live"
-              icon="arrow-upload-filled"
-              style={styles.grow}
-              loading={shareState.isLoading()}
-              onPress={shareConfig}
-            >
-              {t("step.completed.share")}
-            </LakeButton>
+            <TrackPressable name="completed.share">
+              <LakeButton
+                color="live"
+                icon="arrow-upload-filled"
+                style={styles.grow}
+                loading={shareState.isLoading()}
+                onPress={shareConfig}
+              >
+                {t("step.completed.share")}
+              </LakeButton>
+            </TrackPressable>
           </Box>
         ) : null}
       </TransitionView>
