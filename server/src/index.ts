@@ -6,9 +6,9 @@ import fs from "fs";
 import path from "pathe";
 import { createViteDevServer } from "./client/devServer";
 import { cardConfigSchema, getCardConfig, saveCardConfig } from "./utils/cardConfig";
+import { clientEnv, env } from "./utils/env";
 
 const PORT = 8080;
-const NODE_ENV = process.env.NODE_ENV ?? "development";
 
 const start = async () => {
   const app = fastify();
@@ -49,7 +49,14 @@ const start = async () => {
     });
   });
 
-  if (NODE_ENV !== "production") {
+  app.get("/env.js", async (request, reply) => {
+    return reply
+      .type("application/javascript")
+      .header("cache-control", `public, max-age=0`)
+      .send(`window.__env = ${JSON.stringify(clientEnv, null, 2)};`);
+  });
+
+  if (env.NODE_ENV !== "production") {
     const { mainServerPort } = await createViteDevServer();
     const base = `http://localhost:${mainServerPort}`;
 
