@@ -3,10 +3,13 @@ import "@swan-io/lake/src/assets/main.css";
 import "core-js/actual/array/flat";
 import { AppRegistry } from "react-native";
 import { App } from "./app";
+import { initializeGoogleTagManager } from "./utils/googleTagManager";
 
 const rootTag = document.getElementById("app-root");
 
 if (rootTag != null) {
+  initializeGoogleTagManager();
+
   AppRegistry.registerComponent("App", () => App);
   AppRegistry.runApplication("App", { rootTag });
 }

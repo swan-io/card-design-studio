@@ -11,6 +11,7 @@ import { Space } from "@swan-io/lake/src/components/Space";
 import { StyleSheet, View } from "react-native";
 import { t } from "../utils/i18n";
 import { SvgUploadArea } from "./SvgUploadArea";
+import { TrackPressable } from "./TrackPressable";
 
 const styles = StyleSheet.create({
   container: {
@@ -102,9 +103,11 @@ export const ConfigRightPanel = ({
       <Fill minHeight={24} />
 
       <Box alignItems="end">
-        <LakeButton color="live" onPress={onClose}>
-          {t("rightPanel.close")}
-        </LakeButton>
+        <TrackPressable name="close-right-panel">
+          <LakeButton color="live" onPress={onClose}>
+            {t("rightPanel.close")}
+          </LakeButton>
+        </TrackPressable>
       </Box>
     </View>
   </RightPanel>
