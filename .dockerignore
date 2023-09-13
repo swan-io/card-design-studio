@@ -1,7 +1,14 @@
-.env
-node_modules/**
-*./node_modules/**
-server/dist/**
+**
 
-# to remove once S3 is setup
-server/uploads/*
+!package.json
+!yarn.lock
+
+!client/src/**
+!client/package.json
+!client/vite.config.ts
+
+!server/src/**
+!server/package.json
+!server/tsconfig.json
+
+!scripts
