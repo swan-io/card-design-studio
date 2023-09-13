@@ -21,7 +21,6 @@
     ]
   },
   "scripts": {
-    "prepare": "git config --local core.hooksPath .hooks",
     "format": "prettier '**/*' --ignore-unknown --write",
     "link-locale-lake": "sh scripts/lake/link-locale-lake.sh",
     "unlink-locale-lake": "sh scripts/lake/unlink-locale-lake.sh",
