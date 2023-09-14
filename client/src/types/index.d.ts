@@ -4,7 +4,7 @@ type ConfigStep = "welcome" | "name" | "logo" | "color" | "completed" | "share";
 
 type CardConfig = {
   name: string;
-  logo: SVGElement | null;
+  logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
   color: "Silver" | "Black";
 };

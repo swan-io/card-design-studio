@@ -7,7 +7,7 @@ import { Space } from "@swan-io/lake/src/components/Space";
 import { colors } from "@swan-io/lake/src/constants/design";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { match } from "ts-pattern";
+import { P, match } from "ts-pattern";
 import { Except } from "type-fest";
 import { t } from "../utils/i18n";
 import { convertStringToSvg } from "../utils/svg";
@@ -48,6 +48,10 @@ type Props = {
   onLoaded: (config: CardConfig) => void;
 };
 
+type ConfigApiResponse = Except<CardConfig, "logo"> & {
+  logo: string;
+};
+
 export const ShareOverlay = ({ configId, onStartNewDesign, onLoaded }: Props) => {
   const [state, setState] = useState<AsyncData<Result<void, unknown>>>(AsyncData.NotAsked());
 
@@ -63,25 +67,33 @@ export const ShareOverlay = ({ configId, onStartNewDesign, onLoaded }: Props) =>
           return { ok: false };
         }
 
-        const data = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-        const svg = convertStringToSvg(data.logo); // eslint-disable-line
+        const data: ConfigApiResponse = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+
+        const logo = match(data.logo)
+          .with(P.string.startsWith("<svg"), svg => convertStringToSvg(svg))
+          .otherwise(base64Uri => {
+            // if logo does not start with <svg, it is a base64 encoded png
+            const image = new Image();
+            image.src = base64Uri;
+            return image;
+          });
+
         return {
           ok: true,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: {
             ...data,
-            logo: svg,
+            logo,
           },
         };
       })
       .then(result => {
         match(result)
-          .with({ ok: true }, ({ data }) => {
+          .with({ data: P.not(P.nullish) }, ({ data }) => {
             setState(AsyncData.Done(Result.Ok(undefined)));
             // "/api/config/:id" returns a CardConfig if request is successful
-            onLoaded(data); // eslint-disable-line @typescript-eslint/no-unsafe-argument
+            onLoaded(data);
           })
-          .with({ ok: false }, () => {
+          .otherwise(() => {
             setState(AsyncData.Done(Result.Error(undefined)));
           });
       })
