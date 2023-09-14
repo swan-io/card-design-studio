@@ -143,9 +143,9 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
       </group>
 
       <OrbitControls enablePan={false} enableZoom={false} enabled={orbitEnabled} />
-      <ambientLight color={0xffffff} intensity={1} />
-      <pointLight intensity={0.2} decay={2} position={[-10, -10, -21]} />
-      <pointLight intensity={0.2} decay={2} position={[10, 10, 21]} />
+      <ambientLight color={0xffffff} intensity={2.5} />
+      <pointLight intensity={100} position={[-6, 5, -15]} />
+      <pointLight intensity={100} position={[6, 5, 15]} />
 
       <Environment
         files={[
