@@ -7,6 +7,10 @@ export const env = validate({
   validators: {
     NODE_ENV: oneOf("development", "production"),
     CLIENT_GOOGLE_TAG_MANAGER_ID: string,
+    AWS_ACCESS_KEY_ID: string,
+    AWS_SECRET_ACCESS_KEY: string,
+    AWS_REGION: string,
+    S3_BUCKET_NAME: string,
   },
 });
 
