@@ -49,36 +49,36 @@ const cameraPositions: Record<
   },
   name: {
     getPosition: ratio => {
-      const z = 6 / Math.min(1, ratio);
-      return new Vector3(-3, -1.5, z);
+      const z = 5 / Math.min(1, ratio);
+      return new Vector3(-2, -1.5, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
   logo: {
     getPosition: ratio => {
-      const z = 20 / Math.min(1, ratio);
-      const y = -5.8 + 3 * Math.min(1, ratio);
+      const z = 10 / Math.min(1, ratio);
+      const y = -5.8 + 4 * Math.min(1, ratio);
       return new Vector3(0, y, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
   color: {
     getPosition: ratio => {
-      const z = 20 / Math.min(1, ratio * 1.7);
+      const z = 16 / Math.min(1, ratio * 1.7);
       return new Vector3(0.5, -1, z);
     },
     rotation: new Vector3(0, -0.6, 0),
   },
   completed: {
     getPosition: ratio => {
-      const z = 20 / Math.min(1, ratio * 1.7);
+      const z = 16 / Math.min(1, ratio * 1.7);
       return new Vector3(0, 0, z);
     },
     rotation: new Vector3(-0.02, -2.6, 0),
   },
   share: {
     getPosition: ratio => {
-      const z = 22 / Math.min(1, ratio * 1.7);
+      const z = 18 / Math.min(1, ratio * 1.7);
       return new Vector3(0, 0, z);
     },
     rotation: new Vector3(0, 0, 0),
@@ -127,6 +127,10 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
 
   // Change camera position on resize
   useEffect(() => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    ratioRef.current = width / height;
+
     const handleResize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
