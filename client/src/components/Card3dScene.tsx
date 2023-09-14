@@ -1,4 +1,4 @@
-import { Environment, OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import envNx from "@swan-io/lake/src/assets/3d-card/environment/nx.png?url";
 import envNy from "@swan-io/lake/src/assets/3d-card/environment/ny.png?url";
@@ -50,35 +50,36 @@ const cameraPositions: Record<
   name: {
     getPosition: ratio => {
       const z = 6 / Math.min(1, ratio);
-      return new Vector3(-2, -1.5, z);
+      return new Vector3(-3, -1.5, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
   logo: {
     getPosition: ratio => {
-      const z = 10 / Math.min(1, ratio);
-      const y = -5.8 + 4 * Math.min(1, ratio);
+      const z = 20 / Math.min(1, ratio);
+      const y = -5.8 + 3 * Math.min(1, ratio);
       return new Vector3(0, y, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
   color: {
     getPosition: ratio => {
-      const z = 16 / Math.min(1, ratio * 1.7);
+      const z = 20 / Math.min(1, ratio * 1.7);
       return new Vector3(0.5, -1, z);
     },
-    rotation: new Vector3(0, 0.6, 0.02),
+    rotation: new Vector3(0, -0.6, 0),
   },
   completed: {
     getPosition: ratio => {
-      const z = 16 / Math.min(1, ratio * 1.7);
-      return new Vector3(-0.5, -1, z);
+      const z = 20 / Math.min(1, ratio * 1.7);
+      return new Vector3(0, 0, z);
     },
-    rotation: new Vector3(-0.02, 2.6, 0),
+    rotation: new Vector3(-0.02, -2.6, 0),
   },
   share: {
-    getPosition: _ratio => {
-      return new Vector3(0, 0, 12);
+    getPosition: ratio => {
+      const z = 22 / Math.min(1, ratio * 1.7);
+      return new Vector3(0, 0, z);
     },
     rotation: new Vector3(0, 0, 0),
   },
@@ -92,28 +93,35 @@ type Props = {
   logoScale: number;
 };
 
+const cameraConfig = {
+  fov: 50,
+  far: 100,
+  near: 0.1,
+  position: [0, 0, 12] as const,
+};
+
 export default ({ step, ownerName, color, logo, logoScale }: Props) => (
-  <Canvas>
+  <Canvas camera={cameraConfig}>
     <CardScene step={step} ownerName={ownerName} color={color} logo={logo} logoScale={logoScale} />
   </Canvas>
 );
 
 const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const cardRef = useRef<THREE.Group>(null);
-  const cameraGroupRef = useRef<THREE.Group>(null);
   const camera = useThree(state => state.camera);
   const ratioRef = useRef(1);
   const stepRef = useRef(step);
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
 
   const cameraPositionAnimation = useRef<Animation<Vector3>>();
-  const cameraRotationAnimation = useRef<Animation<Euler>>();
+  // animate card rotation instead of camera to be able to use orbitControls and rotation animation at the same time
+  const cardRotationAnimation = useRef<Animation<Euler>>();
 
   useEffect(() => {
     cameraPositionAnimation.current = animate(camera.position);
 
-    if (cameraGroupRef.current) {
-      cameraPositionAnimation.current = animate(cameraGroupRef.current.rotation);
+    if (cardRef.current) {
+      cardRotationAnimation.current = animate(cardRef.current.rotation);
     }
   }, []);
 
@@ -143,6 +151,8 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
     const { getPosition, rotation } = cameraPositions[stepRef.current];
     const position = getPosition(ratioRef.current);
 
+    setOrbitEnabled(false);
+
     cameraPositionAnimation.current?.start({
       duration: 1500,
       easing: easeOutExpo,
@@ -156,24 +166,31 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
         setOrbitEnabled(step === "completed" || step === "share");
       },
     });
-    cameraRotationAnimation.current?.start({
-      duration: 1500,
-      easing: easeOutExpo,
-      to: {
-        x: rotation.x,
-        y: rotation.y,
-        z: rotation.z,
-      },
-    });
-  }, [step, cameraPositionAnimation, cameraRotationAnimation]);
+
+    if (stepRef.current === "share") {
+      // if we're on share step, we run an animation to rotate the card infinitely
+      cardRotationAnimation.current?.start({
+        onFrame: time => {
+          return {
+            y: (time / 2000) % (Math.PI * 2),
+          };
+        },
+      });
+    } else {
+      cardRotationAnimation.current?.start({
+        duration: 1500,
+        easing: easeOutExpo,
+        to: {
+          x: rotation.x,
+          y: rotation.y,
+          z: rotation.z,
+        },
+      });
+    }
+  }, [step]);
 
   return (
     <>
-      {/* use group to rotate the camera around scene center independantly from camera position */}
-      <group ref={cameraGroupRef}>
-        <PerspectiveCamera makeDefault={true} position={[0, 0, 12]} fov={50} far={100} near={0.1} />
-      </group>
-
       <OrbitControls enablePan={false} enableZoom={false} enabled={orbitEnabled} />
       <ambientLight color={0xffffff} intensity={2.5} />
       <pointLight intensity={100} position={[-6, 5, -15]} />
