@@ -13,6 +13,10 @@ const c3 = c1 + 1;
 const c4 = (2 * PI) / 3;
 const c5 = (2 * PI) / 4.5;
 
+export const linear: EasingFunction = (x: number) => {
+  return x;
+};
+
 export const easeInQuad: EasingFunction = (x: number) => {
   return x * x;
 };
