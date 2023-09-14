@@ -447,7 +447,7 @@ export const CompletedStep = ({
       body: JSON.stringify({
         name: ownerName,
         color,
-        logo: logo?.outerHTML,
+        logo: logo instanceof HTMLImageElement ? logo.src : logo?.outerHTML,
         logoScale,
       }),
     })
