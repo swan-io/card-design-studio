@@ -157,6 +157,13 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
 
     setOrbitEnabled(false);
 
+    // If camera was rotated by user, we reset camera position and rotation without animation
+    if (camera.rotation.x !== 0 || camera.rotation.y !== 0 || camera.rotation.z !== 0) {
+      camera.position.set(...cameraConfig.position);
+      camera.rotation.set(0, 0, 0);
+    }
+
+    // Animate camera position
     cameraPositionAnimation.current?.start({
       duration: 1500,
       easing: easeOutExpo,
@@ -171,8 +178,8 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
       },
     });
 
+    // For "share" step, we start an infinite rotation animation on the card
     if (stepRef.current === "share") {
-      // if we're on share step, we run an animation to rotate the card infinitely
       cardRotationAnimation.current?.start({
         onFrame: time => {
           return {
@@ -181,6 +188,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
         },
       });
     } else {
+      // For other steps, we animate the card rotation
       cardRotationAnimation.current?.start({
         duration: 1500,
         easing: easeOutExpo,
