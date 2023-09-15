@@ -5,11 +5,16 @@ import snakeCase from "lodash/snakeCase";
 import { z } from "zod";
 import { env } from "./env";
 
+const credentials =
+  env.AWS_ACCESS_KEY_ID.defined === true && env.AWS_SECRET_ACCESS_KEY.defined === true
+    ? {
+        accessKeyId: env.AWS_ACCESS_KEY_ID.value,
+        secretAccessKey: env.AWS_SECRET_ACCESS_KEY.value,
+      }
+    : undefined;
+
 const s3 = new S3({
-  credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-  },
+  credentials,
   region: env.AWS_REGION,
 });
 
