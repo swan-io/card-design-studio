@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN yarn add shx -W && yarn install && yarn build
+RUN yarn add shx -W --ignore-scripts && \
+    yarn install --ignore-scripts && \
+    yarn build
 
 ###
 
