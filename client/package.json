@@ -1,0 +1,36 @@
+{
+  "name": "@swan-io/card-design-studio",
+  "description": "Card design studio",
+  "version": "2.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": "^1.22.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swan-io/card-design-studio.git"
+  },
+  "dependencies": {
+    "@formatjs/intl": "2.9.0",
+    "@swan-io/boxed": "1.0.2",
+    "@swan-io/chicane": "1.4.1",
+    "@swan-io/lake": "2.7.32",
+    "@swan-io/shared-business": "2.7.32",
+    "core-js": "3.31.1",
+    "lodash": "4.17.21",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-gtm-module": "2.0.11",
+    "react-native-web": "0.19.7",
+    "ts-pattern": "5.0.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "4.14.197",
+    "@types/react": "18.2.15",
+    "@types/react-dom": "18.2.7",
+    "@types/react-gtm-module": "2.0.1",
+    "@types/react-native": "0.72.2",
+    "@types/three": "0.155.0"
+  }
+}
