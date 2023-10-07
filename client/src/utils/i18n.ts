@@ -5,7 +5,6 @@ import {
 } from "@swan-io/shared-business/src/utils/languages";
 import translationEN from "../locales/en.json";
 
-// const supportedLanguages = ["en", "es", "de", "fr", "it", "nl", "pt"] as const;
 const supportedLanguages = ["en"] as const;
 type SupportedLanguage = (typeof supportedLanguages)[number];
 
@@ -18,34 +17,10 @@ type Locale = {
 };
 
 const locales: Record<SupportedLanguage, () => Locale> = {
-  // de: () => ({
-  //   language: "de",
-  //   translations: translationDE,
-  // }),
   en: () => ({
     language: "en",
     translations: translationEN,
   }),
-  // es: () => ({
-  //   language: "es",
-  //   translations: translationES,
-  // }),
-  // fr: () => ({
-  //   language: "fr",
-  //   translations: translationFR,
-  // }),
-  // it: () => ({
-  //   language: "it",
-  //   translations: translationIT,
-  // }),
-  // nl: () => ({
-  //   language: "nl",
-  //   translations: translationNL,
-  // }),
-  // pt: () => ({
-  //   language: "pt",
-  //   translations: translationPT,
-  // }),
 };
 
 export const { getBestLocale, getFirstSupportedLanguage, setPreferredLanguage } =
