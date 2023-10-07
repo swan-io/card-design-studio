@@ -1,7 +1,4 @@
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
-import { LakeText } from "@swan-io/lake/src/components/LakeText";
-import { Link } from "@swan-io/lake/src/components/Link";
-import { colors } from "@swan-io/lake/src/constants/design";
 import { UploadArea } from "@swan-io/shared-business/src/components/UploadArea";
 import { useState } from "react";
 import { match } from "ts-pattern";
@@ -21,7 +18,7 @@ type Props = {
 };
 
 export const LogoUploadArea = ({ logo, onChange }: Props) => {
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string>();
 
   const handleLogoDrop = ([file]: File[]) => {
     match(file)
@@ -32,11 +29,11 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
           .then(svg => getMonochromeSvg(svg, "black"))
           .then(onChange)
           .then(() => {
-            setError(false);
+            setError(undefined);
           })
           .catch(error => {
             console.error(error);
-            setError(true);
+            setError(t("step.logo.error"));
           });
       })
       .with({ type: "image/png" }, file => {
@@ -50,11 +47,11 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
           .then(onChange)
           .catch(error => {
             console.error(error);
-            setError(true);
+            setError(t("step.logo.error"));
           });
       })
       .otherwise(() => {
-        setError(true);
+        setError(t("step.logo.error"));
       });
   };
 
@@ -64,19 +61,15 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
       render={() => (
         <UploadArea
           accept={["image/svg+xml", "image/png"]}
-          error={error ? t("step.logo.error") : undefined}
+          error={error}
           maxSize={LOGO_MAX_SIZE}
           onDropAccepted={handleLogoDrop}
+          onDropRejected={() => setError(t("step.logo.invalidFormat"))}
           icon="arrow-download-filled"
           description={t("step.logo.description")}
           value={logo ?? undefined}
         />
       )}
-      help={
-        <Link to="https://docs.swan.io/help/faq/cards" target="_blank">
-          <LakeText color={colors.live[500]}>{t("step.logo.help")}</LakeText>
-        </Link>
-      }
     />
   );
 };
