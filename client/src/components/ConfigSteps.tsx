@@ -4,10 +4,7 @@ import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
-import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
-import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
-import { Link } from "@swan-io/lake/src/components/Link";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { Slider } from "@swan-io/lake/src/components/Slider";
 import { Space } from "@swan-io/lake/src/components/Space";
@@ -299,7 +296,7 @@ type ColorStepProps = {
   onNext: () => void;
 };
 
-const colorItems: RadioGroupItem<CardConfig["color"] | "Custom">[] = [
+const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
   {
     name: t("step.color.silver"),
     value: "Silver",
@@ -308,13 +305,7 @@ const colorItems: RadioGroupItem<CardConfig["color"] | "Custom">[] = [
     name: t("step.color.black"),
     value: "Black",
   },
-  {
-    name: t("step.color.custom"),
-    value: "Custom",
-  },
 ];
-
-const CONTACT_EMAIL = "hello@swan.io";
 
 export const ColorStep = ({
   visible,
@@ -323,17 +314,6 @@ export const ColorStep = ({
   onPrevious,
   onNext,
 }: ColorStepProps) => {
-  const [customColorModalOpened, setCustomColorModalOpened] = useState(false);
-
-  const handleColorChange = (color: CardConfig["color"] | "Custom") => {
-    match(color)
-      .with("Custom", () => {
-        setCustomColorModalOpened(true);
-        trackClickEvent("color.custom");
-      })
-      .otherwise(color => onColorChange(color));
-  };
-
   return (
     <>
       <StepTile visible={visible}>
@@ -341,7 +321,14 @@ export const ColorStep = ({
           type="radioGroup"
           label={t("step.color.label")}
           render={() => (
-            <RadioGroup value={color} items={colorItems} onValueChange={handleColorChange} />
+            <RadioGroup
+              value={color}
+              items={colorItems}
+              onValueChange={color => {
+                trackClickEvent(`color.${color}`);
+                onColorChange(color);
+              }}
+            />
           )}
         />
 
@@ -374,25 +361,6 @@ export const ColorStep = ({
           </TrackPressable>
         </Box>
       </StepTile>
-
-      <LakeModal
-        visible={customColorModalOpened}
-        title={t("step.color.customModalTitle")}
-        onPressClose={() => setCustomColorModalOpened(false)}
-      >
-        <LakeText>
-          {t("step.color.customModalDescription")}
-
-          <Space width={4} />
-
-          <Link to={`mailto:${CONTACT_EMAIL}`} target="_blank">
-            <LakeText color={colors.live[500]}>{CONTACT_EMAIL}</LakeText>
-          </Link>
-        </LakeText>
-
-        <Space height={4} />
-        <LakeText>{t("step.color.customModalDelay")}</LakeText>
-      </LakeModal>
     </>
   );
 };
