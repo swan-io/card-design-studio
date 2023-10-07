@@ -56,7 +56,7 @@ const cameraPositions: Record<
   },
   logo: {
     getPosition: ratio => {
-      const z = 10 / Math.min(1, ratio);
+      const z = 10.5 / Math.min(1, ratio);
       const y = -5.8 + 4 * Math.min(1, ratio);
       return new Vector3(0, y, z);
     },
