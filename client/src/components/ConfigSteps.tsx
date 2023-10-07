@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   tileMobile: {
     paddingVertical: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 24,
     borderRadius: 0,
   },
   tileDesktop: {
@@ -74,6 +74,10 @@ const styles = StyleSheet.create({
   },
   nameNextButton: {
     alignSelf: "flex-end",
+  },
+  swanLogoButton: {
+    // reduce padding to fit on mobile screens
+    paddingHorizontal: 12,
   },
   editButtonContainer: {
     position: "absolute",
@@ -258,6 +262,7 @@ export const LogoStep = ({
               mode="secondary"
               color="live"
               size="small"
+              style={styles.swanLogoButton}
               onPress={() => {
                 const swanLogo = createSwanLogoSvg();
                 onLogoChange(swanLogo);
