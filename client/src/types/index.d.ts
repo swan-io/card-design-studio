@@ -6,7 +6,7 @@ type CardConfig = {
   name: string;
   logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
-  color: "Silver" | "Black";
+  color: "Silver" | "Black" | "Custom";
 };
 
 type Size = {
