@@ -67,14 +67,14 @@ const cameraPositions: Record<
       const z = 16 / Math.min(1, ratio * 1.7);
       return new Vector3(0.5, -1, z);
     },
-    rotation: new Vector3(0, -0.6, 0),
+    rotation: new Vector3(0.2, -0.6, 0),
   },
   completed: {
     getPosition: ratio => {
       const z = 16 / Math.min(1, ratio * 1.7);
       return new Vector3(0, 0, z);
     },
-    rotation: new Vector3(-0.02, -2.6, 0),
+    rotation: new Vector3(0, -5.8, 0),
   },
   share: {
     getPosition: ratio => {
