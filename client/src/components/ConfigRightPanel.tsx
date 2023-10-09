@@ -3,11 +3,14 @@ import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
+import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
+import { Link } from "@swan-io/lake/src/components/Link";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { RightPanel } from "@swan-io/lake/src/components/RightPanel";
 import { Slider } from "@swan-io/lake/src/components/Slider";
 import { Space } from "@swan-io/lake/src/components/Space";
+import { colors } from "@swan-io/lake/src/constants/design";
 import { StyleSheet, View } from "react-native";
 import { t } from "../utils/i18n";
 import { LogoUploadArea } from "./LogoUploadArea";
@@ -18,7 +21,13 @@ const styles = StyleSheet.create({
     padding: 24,
     flex: 1,
   },
+  link: {
+    textDecorationLine: "underline",
+  },
 });
+
+const CUSTOM_LINK_DOCUMENTATION_URL =
+  "https://docs.swan.io/help/faq/cards/can-swan-issue-cards-with-my-companys-custom-design";
 
 type Props = {
   visible: boolean;
@@ -41,6 +50,10 @@ const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
   {
     name: t("step.color.black"),
     value: "Black",
+  },
+  {
+    name: t("step.color.custom"),
+    value: "Custom",
   },
 ];
 
@@ -99,6 +112,12 @@ export const ConfigRightPanel = ({
         label={t("step.color.label")}
         render={() => <RadioGroup value={color} items={colorItems} onValueChange={onColorChange} />}
       />
+
+      <Space height={4} />
+
+      <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="_blank" style={styles.link}>
+        <LakeText color={colors.live[500]}>{t("step.color.moreAboutCustom")}</LakeText>
+      </Link>
 
       <Fill minHeight={24} />
 
