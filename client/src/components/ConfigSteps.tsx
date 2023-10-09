@@ -4,7 +4,9 @@ import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
+import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
+import { Link } from "@swan-io/lake/src/components/Link";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { Slider } from "@swan-io/lake/src/components/Slider";
 import { Space } from "@swan-io/lake/src/components/Space";
@@ -89,6 +91,9 @@ const styles = StyleSheet.create({
   },
   grow: {
     flex: 1,
+  },
+  link: {
+    textDecorationLine: "underline",
   },
 });
 
@@ -316,6 +321,9 @@ const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
   },
 ];
 
+const CUSTOM_LINK_DOCUMENTATION_URL =
+  "https://docs.swan.io/help/faq/cards/can-swan-issue-cards-with-my-companys-custom-design";
+
 export const ColorStep = ({
   visible,
   color,
@@ -340,6 +348,12 @@ export const ColorStep = ({
             />
           )}
         />
+
+        <Space height={4} />
+
+        <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="_blank" style={styles.link}>
+          <LakeText color={colors.live[500]}>{t("step.color.moreAboutCustom")}</LakeText>
+        </Link>
 
         <Space height={24} />
 
