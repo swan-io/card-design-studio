@@ -295,8 +295,8 @@ export const LogoStep = ({
 
 type ColorStepProps = {
   visible: boolean;
-  color: "Silver" | "Black";
-  onColorChange: (color: "Silver" | "Black") => void;
+  color: CardConfig["color"];
+  onColorChange: (color: CardConfig["color"]) => void;
   onPrevious: () => void;
   onNext: () => void;
 };
@@ -309,6 +309,10 @@ const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
   {
     name: t("step.color.black"),
     value: "Black",
+  },
+  {
+    name: t("step.color.custom"),
+    value: "Custom",
   },
 ];
 

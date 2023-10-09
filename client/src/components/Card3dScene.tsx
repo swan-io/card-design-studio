@@ -1,4 +1,4 @@
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, useTexture } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import envNx from "@swan-io/lake/src/assets/3d-card/environment/nx.png?url";
 import envNy from "@swan-io/lake/src/assets/3d-card/environment/ny.png?url";
@@ -16,7 +16,9 @@ import colorSilver from "@swan-io/lake/src/assets/3d-card/model/color_silver.jpg
 import type { Card3dAssetsUrls } from "@swan-io/lake/src/components/Card3dPreview";
 import { Card } from "@swan-io/lake/src/components/Card3dPreview";
 import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 import { Euler, Vector3 } from "three";
+import { match } from "ts-pattern";
 import { Animation, animate } from "../utils/animation";
 import { easeOutExpo } from "../utils/easings";
 
@@ -100,6 +102,13 @@ const cameraConfig = {
   position: [0, 0, 12] as const,
 };
 
+// Set color space to sRGB for textures
+const setTextureColorSpace = (texture: THREE.Texture | THREE.Texture[]) => {
+  if (!Array.isArray(texture)) {
+    texture.colorSpace = THREE.SRGBColorSpace;
+  }
+};
+
 export default ({ step, ownerName, color, logo, logoScale }: Props) => (
   <Canvas camera={cameraConfig}>
     <CardScene step={step} ownerName={ownerName} color={color} logo={logo} logoScale={logoScale} />
@@ -112,6 +121,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const ratioRef = useRef(1);
   const stepRef = useRef(step);
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
+  const customTexture = useTexture("/assets/color_custom.jpg", setTextureColorSpace);
 
   const cameraPositionAnimation = useRef<Animation<Vector3>>();
   // animate card rotation instead of camera to be able to use orbitControls and rotation animation at the same time
@@ -223,7 +233,9 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
         ref={cardRef}
         cardNumber="1234 5678 9012 3456"
         ownerName={ownerName}
-        color={color}
+        color={match(color)
+          .with("Silver", "Black", color => color)
+          .otherwise(() => customTexture)}
         expirationDate="12/24"
         cvv="123"
         logo={logo}
