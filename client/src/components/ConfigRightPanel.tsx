@@ -15,6 +15,7 @@ import { StyleSheet, View } from "react-native";
 import { t } from "../utils/i18n";
 import { LogoUploadArea } from "./LogoUploadArea";
 import { TrackPressable } from "./TrackPressable";
+import { AsyncData } from "@swan-io/boxed";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,11 +34,11 @@ type Props = {
   visible: boolean;
   ownerName: string;
   color: CardConfig["color"];
-  logo: SVGElement | HTMLImageElement | null;
+  logoFile: AsyncData<File>;
   logoScale: number;
   onOwnerNameChange: (ownerName: string) => void;
   onColorChange: (color: CardConfig["color"]) => void;
-  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement, file: File) => void;
   onLogoScaleChange: (logoScale: number) => void;
   onClose: () => void;
 };
@@ -61,7 +62,7 @@ export const ConfigRightPanel = ({
   visible,
   ownerName,
   color,
-  logo,
+  logoFile,
   logoScale,
   onOwnerNameChange,
   onColorChange,
@@ -89,7 +90,7 @@ export const ConfigRightPanel = ({
         )}
       />
 
-      <LogoUploadArea logo={logo} onChange={onLogoChange} />
+      <LogoUploadArea logoFile={logoFile} onChange={onLogoChange} />
       <Space height={24} />
 
       <LakeLabel

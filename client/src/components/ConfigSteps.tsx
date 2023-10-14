@@ -208,8 +208,9 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
 type LogoStepProps = {
   visible: boolean;
   logo: SVGElement | HTMLImageElement | null;
+  logoFile: AsyncData<File>;
   logoScale: number;
-  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement, file?: File) => void;
   onLogoScaleChange: (logoScale: number) => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -220,6 +221,7 @@ const DEFAULT_LOGO_ZOOM = 0.6;
 export const LogoStep = ({
   visible,
   logo,
+  logoFile,
   logoScale,
   onLogoChange,
   onLogoScaleChange,
@@ -228,7 +230,7 @@ export const LogoStep = ({
 }: LogoStepProps) => {
   return (
     <StepTile visible={visible}>
-      <LogoUploadArea logo={logo} onChange={onLogoChange} />
+      <LogoUploadArea logoFile={logoFile} onChange={onLogoChange} />
       <Space height={24} />
 
       <LakeLabel
@@ -393,10 +395,11 @@ type CompletedStepProps = {
   ownerName: string;
   color: CardConfig["color"];
   logo: SVGElement | HTMLImageElement | null;
+  logoFile: AsyncData<File>;
   logoScale: number;
   onOwnerNameChange: (ownerName: string) => void;
   onColorChange: (color: CardConfig["color"]) => void;
-  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement, file: File) => void;
   onLogoScaleChange: (logoScale: number) => void;
 };
 
@@ -405,6 +408,7 @@ export const CompletedStep = ({
   ownerName,
   color,
   logo,
+  logoFile,
   logoScale,
   onOwnerNameChange,
   onColorChange,
@@ -503,7 +507,7 @@ export const CompletedStep = ({
         visible={editing}
         ownerName={ownerName}
         color={color}
-        logo={logo}
+        logoFile={logoFile}
         logoScale={logoScale}
         onOwnerNameChange={onOwnerNameChange}
         onColorChange={onColorChange}
