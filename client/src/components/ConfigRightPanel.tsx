@@ -11,7 +11,7 @@ import { RightPanel } from "@swan-io/lake/src/components/RightPanel";
 import { Slider } from "@swan-io/lake/src/components/Slider";
 import { Space } from "@swan-io/lake/src/components/Space";
 import { colors } from "@swan-io/lake/src/constants/design";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { t } from "../utils/i18n";
 import { LogoUploadArea } from "./LogoUploadArea";
 import { TrackPressable } from "./TrackPressable";
@@ -71,7 +71,7 @@ export const ConfigRightPanel = ({
   onClose,
 }: Props) => (
   <RightPanel visible={visible} onPressClose={onClose}>
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <LakeHeading level={1} variant="h3">
         {t("rightPanel.title")}
       </LakeHeading>
@@ -129,6 +129,6 @@ export const ConfigRightPanel = ({
           </LakeButton>
         </TrackPressable>
       </Box>
-    </View>
+    </ScrollView>
   </RightPanel>
 );
