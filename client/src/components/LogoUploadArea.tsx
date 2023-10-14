@@ -14,25 +14,24 @@ import {
 const LOGO_MAX_SIZE = (1024 * 1024) / 2; // 512KB
 
 type Props = {
-  logo: SVGElement | HTMLImageElement | null;
-  onChange: (logo: SVGElement | HTMLImageElement) => void;
+  logoFile: AsyncData<File>;
+  onChange: (logo: SVGElement | HTMLImageElement, file: File) => void;
 };
 
-export const LogoUploadArea = ({ onChange }: Props) => {
-  const [file, setFile] = useState<AsyncData<File>>(AsyncData.NotAsked());
+export const LogoUploadArea = ({ logoFile, onChange }: Props) => {
   const [error, setError] = useState<string>();
 
   const handleLogoDrop = ([file]: File[]) => {
-    setFile(AsyncData.Loading());
     match(file)
       .with({ type: "image/svg+xml" }, file => {
         convertSvgFileToString(file)
           .then(convertStringToSvg)
           .then(svg => getMonochromeSvg(svg, "black"))
-          .then(onChange)
+          .then(svg => {
+            onChange(svg, file);
+          })
           .then(() => {
             setError(undefined);
-            setFile(AsyncData.Done(file));
           })
           .catch(error => {
             console.error(error);
@@ -47,8 +46,7 @@ export const LogoUploadArea = ({ onChange }: Props) => {
             return image;
           })
           .then(image => {
-            onChange(image);
-            setFile(AsyncData.Done(file));
+            onChange(image, file);
           })
           .catch(error => {
             console.error(error);
@@ -72,7 +70,7 @@ export const LogoUploadArea = ({ onChange }: Props) => {
           onDropRejected={() => setError(t("step.logo.invalidFormat"))}
           icon="arrow-download-filled"
           description={t("step.logo.description")}
-          value={file}
+          value={logoFile}
         />
       )}
     />

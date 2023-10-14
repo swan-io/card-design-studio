@@ -12,6 +12,8 @@ import {
 } from "./components/ConfigSteps";
 import { ShareOverlay } from "./components/ShareOverlay";
 import { Router } from "./utils/routes";
+import { AsyncData } from "@swan-io/boxed";
+import { isNotNullish } from "@swan-io/lake/src/utils/nullish";
 const Card3dScene = lazy(() => import("./components/Card3dScene"));
 
 const styles = StyleSheet.create({
@@ -28,8 +30,16 @@ export const App = () => {
   );
   const [name, setName] = useState("");
   const [logo, setLogo] = useState<SVGElement | HTMLImageElement | null>(null);
+  const [logoFile, setLogoFile] = useState<AsyncData<File>>(AsyncData.NotAsked());
   const [logoScale, setLogoScale] = useState(1);
   const [color, setColor] = useState<CardConfig["color"]>("Silver");
+
+  const handleLogoChange = useCallback((logo: SVGElement | HTMLImageElement, file?: File) => {
+    setLogo(logo);
+    if (isNotNullish(file)) {
+      setLogoFile(AsyncData.Done(file));
+    }
+  }, []);
 
   const handleConfigLoaded = useCallback((config: CardConfig) => {
     setName(config.name);
@@ -80,8 +90,9 @@ export const App = () => {
               <LogoStep
                 visible={step === "logo"}
                 logo={logo}
+                logoFile={logoFile}
                 logoScale={logoScale}
-                onLogoChange={setLogo}
+                onLogoChange={handleLogoChange}
                 onLogoScaleChange={setLogoScale}
                 onPrevious={() => setStep("name")}
                 onNext={() => setStep("color")}
@@ -100,9 +111,10 @@ export const App = () => {
                 ownerName={name}
                 color={color}
                 logo={logo}
+                logoFile={logoFile}
                 logoScale={logoScale}
                 onOwnerNameChange={setName}
-                onLogoChange={setLogo}
+                onLogoChange={handleLogoChange}
                 onLogoScaleChange={setLogoScale}
                 onColorChange={setColor}
               />
