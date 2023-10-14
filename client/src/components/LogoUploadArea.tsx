@@ -1,3 +1,4 @@
+import { AsyncData } from "@swan-io/boxed";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
 import { UploadArea } from "@swan-io/shared-business/src/components/UploadArea";
 import { useState } from "react";
@@ -17,19 +18,21 @@ type Props = {
   onChange: (logo: SVGElement | HTMLImageElement) => void;
 };
 
-export const LogoUploadArea = ({ logo, onChange }: Props) => {
+export const LogoUploadArea = ({ onChange }: Props) => {
+  const [file, setFile] = useState<AsyncData<File>>(AsyncData.NotAsked());
   const [error, setError] = useState<string>();
 
   const handleLogoDrop = ([file]: File[]) => {
+    setFile(AsyncData.Loading());
     match(file)
       .with({ type: "image/svg+xml" }, file => {
-        // @ts-expect-error
         convertSvgFileToString(file)
           .then(convertStringToSvg)
           .then(svg => getMonochromeSvg(svg, "black"))
           .then(onChange)
           .then(() => {
             setError(undefined);
+            setFile(AsyncData.Done(file));
           })
           .catch(error => {
             console.error(error);
@@ -37,14 +40,16 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
           });
       })
       .with({ type: "image/png" }, file => {
-        // @ts-expect-error
         convertPngFileToBase64Uri(file)
           .then(base64Uri => {
             const image = new Image();
             image.src = base64Uri;
             return image;
           })
-          .then(onChange)
+          .then(image => {
+            onChange(image);
+            setFile(AsyncData.Done(file));
+          })
           .catch(error => {
             console.error(error);
             setError(t("step.logo.error"));
@@ -67,7 +72,7 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
           onDropRejected={() => setError(t("step.logo.invalidFormat"))}
           icon="arrow-download-filled"
           description={t("step.logo.description")}
-          value={logo ?? undefined}
+          value={file}
         />
       )}
     />
