@@ -18,21 +18,21 @@
     "start": "node ./dist/index.js"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.412.0",
+    "@aws-sdk/client-s3": "3.428.0",
     "@fastify/reply-from": "9.4.0",
-    "@fastify/sensible": "5.2.0",
-    "@fastify/static": "6.10.2",
-    "@swan-io/boxed": "1.1.0",
-    "fastify": "4.21.0",
+    "@fastify/sensible": "5.3.0",
+    "@fastify/static": "6.11.2",
+    "@swan-io/boxed": "1.2.0",
+    "fastify": "4.24.1",
     "get-port": "7.0.0",
     "lodash": "4.17.21",
     "pathe": "1.1.1",
     "ts-pattern": "5.0.5",
     "valienv": "0.5.0",
-    "zod": "3.22.2"
+    "zod": "3.22.4"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.197",
+    "@types/lodash": "4.14.199",
     "shx": "0.3.4"
   }
 }
