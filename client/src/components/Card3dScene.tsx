@@ -160,6 +160,11 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
 
   // Change camera position and rotation on step change
   useEffect(() => {
+    // handle animation for share step separately
+    if (step === "share") {
+      return;
+    }
+
     stepRef.current = step;
 
     const { getPosition, rotation } = cameraPositions[stepRef.current];
@@ -184,31 +189,53 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
       },
       onComplete: () => {
         // we re-enable orbitControls after animation
-        setOrbitEnabled(step === "completed" || step === "share");
+        setOrbitEnabled(step === "completed");
       },
     });
 
-    // For "share" step, we start an infinite rotation animation on the card
-    if (stepRef.current === "share") {
-      cardRotationAnimation.current?.start({
-        onFrame: time => {
-          return {
-            y: (time / 2000) % (Math.PI * 2),
-          };
-        },
-      });
-    } else {
-      // For other steps, we animate the card rotation
-      cardRotationAnimation.current?.start({
+    // Animate camera rotation
+    cardRotationAnimation.current?.start({
+      duration: 1500,
+      easing: easeOutExpo,
+      to: {
+        x: rotation.x,
+        y: rotation.y,
+        z: rotation.z,
+      },
+    });
+  }, [step]);
+
+  // Set animation for share step
+  useEffect(() => {
+    if (step !== "share") {
+      return;
+    }
+
+    const { getPosition } = cameraPositions[stepRef.current];
+    const position = getPosition(ratioRef.current);
+
+    const z = position.z + 30;
+    camera.position.set(position.x, position.y, z);
+
+    requestAnimationFrame(() => {
+      cameraPositionAnimation.current?.start({
         duration: 1500,
         easing: easeOutExpo,
         to: {
-          x: rotation.x,
-          y: rotation.y,
-          z: rotation.z,
+          x: position.x,
+          y: position.y,
+          z: position.z,
         },
       });
-    }
+    });
+
+    cardRotationAnimation.current?.start({
+      onFrame: time => {
+        return {
+          y: ((time / 2000) % (Math.PI * 2)) - Math.PI / 3,
+        };
+      },
+    });
   }, [step]);
 
   return (
