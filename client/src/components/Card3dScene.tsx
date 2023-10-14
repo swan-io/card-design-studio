@@ -121,7 +121,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const ratioRef = useRef(1);
   const stepRef = useRef(step);
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
-  const customTexture = useTexture("/assets/color_custom.jpg", setTextureColorSpace);
+  const customTexture = useTexture("/assets/custom_color.jpg", setTextureColorSpace);
 
   const cameraPositionAnimation = useRef<Animation<Vector3>>();
   // animate card rotation instead of camera to be able to use orbitControls and rotation animation at the same time
