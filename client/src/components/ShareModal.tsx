@@ -1,7 +1,7 @@
 import { Icon } from "@swan-io/lake/src/components/Icon";
 import { LakeCopyButton } from "@swan-io/lake/src/components/LakeCopyButton";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
-import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
+import { LakeModal } from "@swan-io/shared-business/src/components/LakeModal";
 import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { Link } from "@swan-io/lake/src/components/Link";
 import { Space } from "@swan-io/lake/src/components/Space";

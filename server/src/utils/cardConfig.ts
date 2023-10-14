@@ -25,7 +25,7 @@ export const cardConfigSchema = z.object({
   name: z.string().min(1),
   logo: z.string(),
   logoScale: z.number().min(0).max(1),
-  color: z.union([z.literal("Silver"), z.literal("Black")]),
+  color: z.union([z.literal("Silver"), z.literal("Black"), z.literal("Custom")]),
 });
 
 export type CardConfig = z.infer<typeof cardConfigSchema>;
