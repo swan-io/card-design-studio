@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-type ConfigStep = "welcome" | "name" | "logo" | "color" | "completed" | "share";
+type ConfigStep = "welcome" | "name" | "logo" | "color" | "completed" | "share" | "website-demo";
 
 type CardConfig = {
   name: string;
