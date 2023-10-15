@@ -29,13 +29,10 @@ type Props = {
   onPressClose: () => void;
 };
 
-const shareText = "Some text example";
-const hashTags = "my,hash,tags";
-
 export const ShareModal = ({ visible, configId, onPressClose }: Props) => {
   const sharedLink = `${window.location.origin}/share/${configId}`;
   const encodedSharedLink = encodeURIComponent(sharedLink);
-  const xUrl = `https://x.com/intent/tweet?url=${encodedSharedLink}&text=${shareText}&hashtags=${hashTags}`;
+  const xUrl = `https://x.com/intent/tweet?url=${encodedSharedLink}`;
   // linked accept only 1 param for sharing https://stackoverflow.com/a/61857558
   const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedSharedLink}`;
 
