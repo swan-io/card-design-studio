@@ -85,6 +85,13 @@ const cameraPositions: Record<
     },
     rotation: new Vector3(0, 0, 0),
   },
+  "website-demo": {
+    getPosition: ratio => {
+      const z = 18 / Math.min(1, ratio * 1.7);
+      return new Vector3(0, 0, z);
+    },
+    rotation: new Vector3(0, 0, 0),
+  },
 };
 
 type Props = {
@@ -161,7 +168,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   // Change camera position and rotation on step change
   useEffect(() => {
     // handle animation for share step separately
-    if (step === "share") {
+    if (step === "share" || step === "website-demo") {
       return;
     }
 
@@ -207,7 +214,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
 
   // Set animation for share step
   useEffect(() => {
-    if (step !== "share") {
+    if (step !== "share" && step !== "website-demo") {
       return;
     }
 
