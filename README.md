@@ -13,13 +13,64 @@ This project was also an opportunity to learn and experiment with WebGL and thre
 
 - [Vite](https://vitejs.dev/) for development server and bundle the app
 - [React](https://reactjs.org/) for UI
-- [CSS modules](https://github.com/css-modules/css-modules) for stylesheet
-- [reat-aria](https://react-spectrum.adobe.com/react-aria/) for accessibility
-- [react-spring](https://react-spring.io/) for animations and transitions
+- [react-native-web](https://github.com/necolas/react-native-web) for components primitives
+- [lake](https://github.com/swan-io/lake) Swan's design system for UI components
 - [threejs](https://threejs.org/) to create 3D scene
+- [react-three-fiber](https://github.com/pmndrs/react-three-fiber) to use threejs with React
 
-### Why this project doesn't use react-three-fiber?
-[react-three-fiber](https://github.com/pmndrs/react-three-fiber) and the eco-system around it looks amazing to do 3D projects with React. As this project was a first experiment with [threejs](https://threejs.org/), using `react-three-fiber` requires more time to learn. And it might makes experimentation harder because in case of error, the lack of experience with threejs will make us doubt if it comes from an error with `threejs` or a miss-usage of `react-three-fiber`.
+## Technical details about project organization
+
+This app is composed of 2 parts:
+
+- `server` folder which contains a nodejs app to save card configuration in a json file and serve static files
+- `client` folder which contains the front-end app with UI and 3D scene
+
+### Server
+
+The server is a fastify app with those routes:
+
+- `GET /health` to check if the server is running
+- `POST /api/config` to save card configuration in a json file
+- `GET /api/config/:id` to get a specific card configuration
+- `GET /env.js` to get environment variables for the front-end app
+
+The app will behave in a different way dependending on the `NODE_ENV` environment variable:
+
+- `production` will serve static files from `/server/dist` folder (this folder is created by Vite in `yarn build` command)
+- otherwise the server will start a Vite dev server and proxy all requests to it
+
+> The config file id is the name of the card holder with those transformations:
+>
+> - all characters are lowercased
+> - all special characters are removed
+> - all spaces are replaced by `_`
+> - if the same id is used multiple times, a number is added at the end of the id (for example: `frederic`, `frederic_1`, `frederic_2`)
+
+### Client
+
+The client is a React app bundled by Vite.  
+This app has 3 different urls:
+
+#### `/` Card configuration flow
+
+The root url contains the card configuration flow. The user will be able to select a name, a logo and a color for the card.  
+Then he can save the configuration thanks to share button.
+
+#### `/share/:id` Card configuration preview
+
+This url loads a specific card configuration and display it in a 3D scene with automatic rotation.
+
+#### `/website-demo?:backgroundColor&:cardColor&:cardHolderName` Page dedicated for Swan website.
+
+This page gives the possibility to add an animated card preview on a website with an iframe.  
+This is configurable with query parameters:
+
+- `backgroundColor` is the background color of the page, we can only set hexadecimal color withut the `#` prefix (for example: `F5F5F7`)
+- `cardColor` is the color of the card, possible values are:
+  - `black` (default if no color is specified)
+  - `silver`
+  - `custom`
+- `cardHolderName` is the name of the cardholder displayed on the card
 
 ## Technical details about 3D
 
@@ -31,58 +82,12 @@ Most of lighting is done with an hdri image available [here](https://hdrihaven.c
 
 The 3D card model and textures was created with [Blender](https://www.blender.org/).
 After export to gltf format, few changes was made on `card.gltf` file:
+
 - all `doubleSided` keys on all materials was set to false. It improves performances and avoid some glitches.
 - for the `black_band` material, the `roughnessFactor` was changed to improve reflection of magnetic band in threejs. (The reflection isn't exaclty the same between Blender and threejs).
 
 ### SVG logo integration in 3D
 
-Threejs has a [SVGLoader](https://threejs.org/docs/#examples/en/loaders/SVGLoader) but most of SVG we tried didn't work. My first idea was to improve the loader to make my SVG working but it will be very long and hard to handle all cases.  
+Threejs has a [SVGLoader](https://threejs.org/docs/#examples/en/loaders/SVGLoader) but most of SVG we tried didn't work. Our first idea was to improve the loader to make my SVG working but it will be very long and hard to handle all cases.  
 To workaround this, we put the SVG in an Image element and then pass it to a threejs material as an alpha map (white pixels are displayed and black pixels make the plane transparent).  
 As the image is transformed from vector to pixel matrix, the result can be a little blurry but we're sure it works as well as if we display the SVG in a `img` tag.
-
-### Custom shader for card color
-
-Here we will talk about shaders, to give you a brief presentation, shaders are programs written in [GLSL](https://en.wikipedia.org/wiki/OpenGL_Shading_Language) executed by the GPU.  
-There are 2 kinds of shaders:
-- vertex shader which compute the position of points in the WebGL canvas.
-- fragment shader which compute the color of each pixels in the area defined by the vertex shader.
-
-> fragment shaders can be confusing at the begining because as front-end developers, we used to code with blocks having a size (width and height), a shape (corner radius, custom shapes with svg, ...) and colors (single color, grandients, ...). With fragment shader, we write a function returning the color of 1 single pixel. I recommand [The Book of Shaders
-](https://thebookofshaders.com/) to learn shaders with examples.
-
-In `CardPreview` component, the `cardMaterial` defines card color and light reflection (there are more parameters but we sumarize to keep explanation as simple as possible).  
-With the `MeshStandardMaterial` class, we can set a texture to define the card color with the `map` key.  
-So we could change the card color by just switching between `map: cardTextures.silver` and `cardTextures.black`. But it will changes the color without any transition.  
-If we want a transition between 2 textures we have to:
-- send silver and black textures to the material shader
-- send animation progress to the material shader
-- change the material shader to add a transition between silver and black colors depending on animation progress
-
-A great thing about threejs is that we can change some parts of provided shaders to create custom behavior without having to recreate it from scratch.  
-In our case it makes possible to have a custom behavior about color and keep all lights reflection from `MeshStandardMaterial`.  
-
-To do that, materials provide `onBeforeCompile` property where we can define a function which customize the material's shader.
-
-To send values from our JS runtime to a shader, we use uniforms.
-- silver texture is send with `map` key
-- black texture is send with `shader.uniforms.map2`
-- `shader.uniforms.uPercent` send animation progress to the shader
-
-To make our material color changes depending on those uniforms, we have to insert chunks of GLSL program in the material shader:
-- `map_pars_fragment` contains code which defines uniforms and custom function declarations we'll use for our transition.
-- `map_fragment` contains the code defining the transition between silver and black color depending on `uPercentage`.
-
-> We need to inject 2 fragments because uniforms and functions declaration can be done only outside the `main` function. `map_pars_fragment` is injected outside this `main` function, and `map_fragment` is injected inside.
-
-> The transition is done with a perlin noise, this function make possible to have an organic transition, more details here: https://en.wikipedia.org/wiki/Perlin_noise
-
-### Custom shader for app background
-
-To have a scene background similar to the website with the orange -> purple gradient, we created a custom shader which is applied to a plan.  
-- `gradientVertex` make the plan full screen and behind other objects.
-- `gradientFragment` define the color of each pixel.
-
-As the `gradientFragment` is executed for each pixel, the code isn't very intuitive for people discovering shaders, to sumarize:
-- we create a diagonal gradiant from orange to purple
-- we create a white to black radial gradiant
-- we use "white to black radial gradiant" as a mask of the diagonal gradiant
