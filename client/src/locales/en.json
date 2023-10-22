@@ -13,6 +13,8 @@
   "step.logo.description": "SVG and PNG files are supported.",
   "step.logo.error": "Failed to load the logo. Please try again.",
   "step.logo.invalidFormat": "Invalid logo format, only SVG and PNG files are supported.",
+  "step.logo.help": "Logo hiccups?",
+  "step.logo.helpLink": "Check our docs!",
   "step.logo.size.label": "Logo size",
   "step.logo.setSwanLogo": "Use Swan's logo",
   "step.color.label": "Card color",
