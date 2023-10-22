@@ -218,23 +218,28 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
       return;
     }
 
+    // enable zoom animation only for share step
+    const withZoomAnimation = step === "share";
+
     const { getPosition } = cameraPositions[stepRef.current];
     const position = getPosition(ratioRef.current);
 
-    const z = position.z + 30;
+    const z = withZoomAnimation ? position.z + 30 : position.z;
     camera.position.set(position.x, position.y, z);
 
-    requestAnimationFrame(() => {
-      cameraPositionAnimation.current?.start({
-        duration: 1500,
-        easing: easeOutExpo,
-        to: {
-          x: position.x,
-          y: position.y,
-          z: position.z,
-        },
+    if (withZoomAnimation) {
+      requestAnimationFrame(() => {
+        cameraPositionAnimation.current?.start({
+          duration: 1500,
+          easing: easeOutExpo,
+          to: {
+            x: position.x,
+            y: position.y,
+            z: position.z,
+          },
+        });
       });
-    });
+    }
 
     cardRotationAnimation.current?.start({
       onFrame: time => {
