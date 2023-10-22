@@ -1,5 +1,8 @@
 import { AsyncData } from "@swan-io/boxed";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
+import { LakeText } from "@swan-io/lake/src/components/LakeText";
+import { Link } from "@swan-io/lake/src/components/Link";
+import { colors } from "@swan-io/lake/src/constants/design";
 import { UploadArea } from "@swan-io/shared-business/src/components/UploadArea";
 import { useState } from "react";
 import { match } from "ts-pattern";
@@ -10,8 +13,16 @@ import {
   convertSvgFileToString,
   getMonochromeSvg,
 } from "../utils/svg";
+import { Space } from "@swan-io/lake/src/components/Space";
+import { StyleSheet } from "react-native";
 
 const LOGO_MAX_SIZE = (1024 * 1024) / 2; // 512KB
+
+const styles = StyleSheet.create({
+  link: {
+    textDecorationLine: "underline",
+  },
+});
 
 type Props = {
   logoFile: AsyncData<File>;
@@ -73,6 +84,17 @@ export const LogoUploadArea = ({ logoFile, onChange }: Props) => {
           value={logoFile}
         />
       )}
+      help={
+        <LakeText color={colors.gray[700]}>
+          {t("step.logo.help")}
+
+          <Space width={4} />
+
+          <Link to="https://docs.swan.io/help/faq/cards" target="_blank" style={styles.link}>
+            <LakeText color={colors.live[500]}>{t("step.logo.helpLink")}</LakeText>
+          </Link>
+        </LakeText>
+      }
     />
   );
 };
