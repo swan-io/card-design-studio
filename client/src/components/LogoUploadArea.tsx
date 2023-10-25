@@ -1,3 +1,4 @@
+import { AsyncData } from "@swan-io/boxed";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
 import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { Link } from "@swan-io/lake/src/components/Link";
@@ -12,49 +13,59 @@ import {
   convertSvgFileToString,
   getMonochromeSvg,
 } from "../utils/svg";
+import { Space } from "@swan-io/lake/src/components/Space";
+import { StyleSheet } from "react-native";
 
 const LOGO_MAX_SIZE = (1024 * 1024) / 2; // 512KB
 
+const styles = StyleSheet.create({
+  link: {
+    textDecorationLine: "underline",
+  },
+});
+
 type Props = {
-  logo: SVGElement | HTMLImageElement | null;
-  onChange: (logo: SVGElement | HTMLImageElement) => void;
+  logoFile: AsyncData<File>;
+  onChange: (logo: SVGElement | HTMLImageElement, file: File) => void;
 };
 
-export const LogoUploadArea = ({ logo, onChange }: Props) => {
-  const [error, setError] = useState(false);
+export const LogoUploadArea = ({ logoFile, onChange }: Props) => {
+  const [error, setError] = useState<string>();
 
   const handleLogoDrop = ([file]: File[]) => {
     match(file)
       .with({ type: "image/svg+xml" }, file => {
-        // @ts-expect-error
         convertSvgFileToString(file)
           .then(convertStringToSvg)
           .then(svg => getMonochromeSvg(svg, "black"))
-          .then(onChange)
+          .then(svg => {
+            onChange(svg, file);
+          })
           .then(() => {
-            setError(false);
+            setError(undefined);
           })
           .catch(error => {
             console.error(error);
-            setError(true);
+            setError(t("step.logo.error"));
           });
       })
       .with({ type: "image/png" }, file => {
-        // @ts-expect-error
         convertPngFileToBase64Uri(file)
           .then(base64Uri => {
             const image = new Image();
             image.src = base64Uri;
             return image;
           })
-          .then(onChange)
+          .then(image => {
+            onChange(image, file);
+          })
           .catch(error => {
             console.error(error);
-            setError(true);
+            setError(t("step.logo.error"));
           });
       })
       .otherwise(() => {
-        setError(true);
+        setError(t("step.logo.error"));
       });
   };
 
@@ -64,18 +75,25 @@ export const LogoUploadArea = ({ logo, onChange }: Props) => {
       render={() => (
         <UploadArea
           accept={["image/svg+xml", "image/png"]}
-          error={error ? t("step.logo.error") : undefined}
+          error={error}
           maxSize={LOGO_MAX_SIZE}
           onDropAccepted={handleLogoDrop}
+          onDropRejected={() => setError(t("step.logo.invalidFormat"))}
           icon="arrow-download-filled"
           description={t("step.logo.description")}
-          value={logo ?? undefined}
+          value={logoFile}
         />
       )}
       help={
-        <Link to="https://docs.swan.io/help/faq/cards" target="_blank">
-          <LakeText color={colors.live[500]}>{t("step.logo.help")}</LakeText>
-        </Link>
+        <LakeText color={colors.gray[700]}>
+          {t("step.logo.help")}
+
+          <Space width={4} />
+
+          <Link to="https://docs.swan.io/help/faq/cards" target="_blank" style={styles.link}>
+            <LakeText color={colors.live[500]}>{t("step.logo.helpLink")}</LakeText>
+          </Link>
+        </LakeText>
       }
     />
   );

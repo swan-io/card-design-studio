@@ -4,7 +4,6 @@ import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
 import { LakeHeading } from "@swan-io/lake/src/components/LakeHeading";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
-import { LakeModal } from "@swan-io/lake/src/components/LakeModal";
 import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
 import { Link } from "@swan-io/lake/src/components/Link";
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
   },
   tileMobile: {
     paddingVertical: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 24,
     borderRadius: 0,
   },
   tileDesktop: {
@@ -77,6 +76,10 @@ const styles = StyleSheet.create({
   },
   nameNextButton: {
     alignSelf: "flex-end",
+  },
+  swanLogoButton: {
+    // reduce padding to fit on mobile screens
+    paddingHorizontal: 12,
   },
   editButtonContainer: {
     position: "absolute",
@@ -88,6 +91,9 @@ const styles = StyleSheet.create({
   },
   grow: {
     flex: 1,
+  },
+  link: {
+    textDecorationLine: "underline",
   },
 });
 
@@ -202,8 +208,9 @@ export const NameStep = ({ visible, name, onNameChange, onNext }: NameStepProps)
 type LogoStepProps = {
   visible: boolean;
   logo: SVGElement | HTMLImageElement | null;
+  logoFile: AsyncData<File>;
   logoScale: number;
-  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement, file?: File) => void;
   onLogoScaleChange: (logoScale: number) => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -214,6 +221,7 @@ const DEFAULT_LOGO_ZOOM = 0.6;
 export const LogoStep = ({
   visible,
   logo,
+  logoFile,
   logoScale,
   onLogoChange,
   onLogoScaleChange,
@@ -222,7 +230,7 @@ export const LogoStep = ({
 }: LogoStepProps) => {
   return (
     <StepTile visible={visible}>
-      <LogoUploadArea logo={logo} onChange={onLogoChange} />
+      <LogoUploadArea logoFile={logoFile} onChange={onLogoChange} />
       <Space height={24} />
 
       <LakeLabel
@@ -261,6 +269,7 @@ export const LogoStep = ({
               mode="secondary"
               color="live"
               size="small"
+              style={styles.swanLogoButton}
               onPress={() => {
                 const swanLogo = createSwanLogoSvg();
                 onLogoChange(swanLogo);
@@ -293,13 +302,13 @@ export const LogoStep = ({
 
 type ColorStepProps = {
   visible: boolean;
-  color: "Silver" | "Black";
-  onColorChange: (color: "Silver" | "Black") => void;
+  color: CardConfig["color"];
+  onColorChange: (color: CardConfig["color"]) => void;
   onPrevious: () => void;
   onNext: () => void;
 };
 
-const colorItems: RadioGroupItem<CardConfig["color"] | "Custom">[] = [
+const colorItems: RadioGroupItem<CardConfig["color"]>[] = [
   {
     name: t("step.color.silver"),
     value: "Silver",
@@ -314,7 +323,8 @@ const colorItems: RadioGroupItem<CardConfig["color"] | "Custom">[] = [
   },
 ];
 
-const CONTACT_EMAIL = "hello@swan.io";
+const CUSTOM_LINK_DOCUMENTATION_URL =
+  "https://docs.swan.io/help/faq/cards/can-swan-issue-cards-with-my-companys-custom-design";
 
 export const ColorStep = ({
   visible,
@@ -323,17 +333,6 @@ export const ColorStep = ({
   onPrevious,
   onNext,
 }: ColorStepProps) => {
-  const [customColorModalOpened, setCustomColorModalOpened] = useState(false);
-
-  const handleColorChange = (color: CardConfig["color"] | "Custom") => {
-    match(color)
-      .with("Custom", () => {
-        setCustomColorModalOpened(true);
-        trackClickEvent("color.custom");
-      })
-      .otherwise(color => onColorChange(color));
-  };
-
   return (
     <>
       <StepTile visible={visible}>
@@ -341,9 +340,22 @@ export const ColorStep = ({
           type="radioGroup"
           label={t("step.color.label")}
           render={() => (
-            <RadioGroup value={color} items={colorItems} onValueChange={handleColorChange} />
+            <RadioGroup
+              value={color}
+              items={colorItems}
+              onValueChange={color => {
+                trackClickEvent(`color.${color}`);
+                onColorChange(color);
+              }}
+            />
           )}
         />
+
+        <Space height={4} />
+
+        <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="_blank" style={styles.link}>
+          <LakeText color={colors.live[500]}>{t("step.color.moreAboutCustom")}</LakeText>
+        </Link>
 
         <Space height={24} />
 
@@ -374,25 +386,6 @@ export const ColorStep = ({
           </TrackPressable>
         </Box>
       </StepTile>
-
-      <LakeModal
-        visible={customColorModalOpened}
-        title={t("step.color.customModalTitle")}
-        onPressClose={() => setCustomColorModalOpened(false)}
-      >
-        <LakeText>
-          {t("step.color.customModalDescription")}
-
-          <Space width={4} />
-
-          <Link to={`mailto:${CONTACT_EMAIL}`} target="_blank">
-            <LakeText color={colors.live[500]}>{CONTACT_EMAIL}</LakeText>
-          </Link>
-        </LakeText>
-
-        <Space height={4} />
-        <LakeText>{t("step.color.customModalDelay")}</LakeText>
-      </LakeModal>
     </>
   );
 };
@@ -402,10 +395,11 @@ type CompletedStepProps = {
   ownerName: string;
   color: CardConfig["color"];
   logo: SVGElement | HTMLImageElement | null;
+  logoFile: AsyncData<File>;
   logoScale: number;
   onOwnerNameChange: (ownerName: string) => void;
   onColorChange: (color: CardConfig["color"]) => void;
-  onLogoChange: (logo: SVGElement | HTMLImageElement) => void;
+  onLogoChange: (logo: SVGElement | HTMLImageElement, file: File) => void;
   onLogoScaleChange: (logoScale: number) => void;
 };
 
@@ -414,6 +408,7 @@ export const CompletedStep = ({
   ownerName,
   color,
   logo,
+  logoFile,
   logoScale,
   onOwnerNameChange,
   onColorChange,
@@ -512,7 +507,7 @@ export const CompletedStep = ({
         visible={editing}
         ownerName={ownerName}
         color={color}
-        logo={logo}
+        logoFile={logoFile}
         logoScale={logoScale}
         onOwnerNameChange={onOwnerNameChange}
         onColorChange={onColorChange}

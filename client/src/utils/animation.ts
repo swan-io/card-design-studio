@@ -36,8 +36,9 @@ export const animate = <T>(target: T): Animation<T> => {
 
     match(params)
       .with({ onFrame: P.not(P.nullish) }, ({ onFrame }) => {
+        const startTime = Date.now();
         const tick = () => {
-          const time = Date.now();
+          const time = Date.now() - startTime;
           const values = onFrame(time);
 
           for (const property in values) {

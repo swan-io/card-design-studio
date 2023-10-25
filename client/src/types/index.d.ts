@@ -1,12 +1,12 @@
 /// <reference types="vite/client" />
 
-type ConfigStep = "welcome" | "name" | "logo" | "color" | "completed" | "share";
+type ConfigStep = "welcome" | "name" | "logo" | "color" | "completed" | "share" | "website-demo";
 
 type CardConfig = {
   name: string;
   logo: SVGElement | HTMLImageElement | null;
   logoScale: number;
-  color: "Silver" | "Black";
+  color: "Silver" | "Black" | "Custom";
 };
 
 type Size = {

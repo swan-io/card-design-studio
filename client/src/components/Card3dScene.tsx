@@ -1,4 +1,4 @@
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, useTexture } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import envNx from "@swan-io/lake/src/assets/3d-card/environment/nx.png?url";
 import envNy from "@swan-io/lake/src/assets/3d-card/environment/ny.png?url";
@@ -16,7 +16,9 @@ import colorSilver from "@swan-io/lake/src/assets/3d-card/model/color_silver.jpg
 import type { Card3dAssetsUrls } from "@swan-io/lake/src/components/Card3dPreview";
 import { Card } from "@swan-io/lake/src/components/Card3dPreview";
 import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 import { Euler, Vector3 } from "three";
+import { match } from "ts-pattern";
 import { Animation, animate } from "../utils/animation";
 import { easeOutExpo } from "../utils/easings";
 
@@ -56,7 +58,7 @@ const cameraPositions: Record<
   },
   logo: {
     getPosition: ratio => {
-      const z = 10 / Math.min(1, ratio);
+      const z = 10.5 / Math.min(1, ratio);
       const y = -5.8 + 4 * Math.min(1, ratio);
       return new Vector3(0, y, z);
     },
@@ -67,16 +69,23 @@ const cameraPositions: Record<
       const z = 16 / Math.min(1, ratio * 1.7);
       return new Vector3(0.5, -1, z);
     },
-    rotation: new Vector3(0, -0.6, 0),
+    rotation: new Vector3(0.2, -0.6, 0),
   },
   completed: {
     getPosition: ratio => {
       const z = 16 / Math.min(1, ratio * 1.7);
       return new Vector3(0, 0, z);
     },
-    rotation: new Vector3(-0.02, -2.6, 0),
+    rotation: new Vector3(0, -5.8, 0),
   },
   share: {
+    getPosition: ratio => {
+      const z = 18 / Math.min(1, ratio * 1.7);
+      return new Vector3(0, 0, z);
+    },
+    rotation: new Vector3(0, 0, 0),
+  },
+  "website-demo": {
     getPosition: ratio => {
       const z = 18 / Math.min(1, ratio * 1.7);
       return new Vector3(0, 0, z);
@@ -100,6 +109,13 @@ const cameraConfig = {
   position: [0, 0, 12] as const,
 };
 
+// Set color space to sRGB for textures
+const setTextureColorSpace = (texture: THREE.Texture | THREE.Texture[]) => {
+  if (!Array.isArray(texture)) {
+    texture.colorSpace = THREE.SRGBColorSpace;
+  }
+};
+
 export default ({ step, ownerName, color, logo, logoScale }: Props) => (
   <Canvas camera={cameraConfig}>
     <CardScene step={step} ownerName={ownerName} color={color} logo={logo} logoScale={logoScale} />
@@ -112,6 +128,7 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const ratioRef = useRef(1);
   const stepRef = useRef(step);
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
+  const customTexture = useTexture("/assets/custom_color.jpg", setTextureColorSpace);
 
   const cameraPositionAnimation = useRef<Animation<Vector3>>();
   // animate card rotation instead of camera to be able to use orbitControls and rotation animation at the same time
@@ -150,6 +167,11 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
 
   // Change camera position and rotation on step change
   useEffect(() => {
+    // handle animation for share step separately
+    if (step === "share" || step === "website-demo") {
+      return;
+    }
+
     stepRef.current = step;
 
     const { getPosition, rotation } = cameraPositions[stepRef.current];
@@ -174,31 +196,58 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
       },
       onComplete: () => {
         // we re-enable orbitControls after animation
-        setOrbitEnabled(step === "completed" || step === "share");
+        setOrbitEnabled(step === "completed");
       },
     });
 
-    // For "share" step, we start an infinite rotation animation on the card
-    if (stepRef.current === "share") {
-      cardRotationAnimation.current?.start({
-        onFrame: time => {
-          return {
-            y: (time / 2000) % (Math.PI * 2),
-          };
-        },
-      });
-    } else {
-      // For other steps, we animate the card rotation
-      cardRotationAnimation.current?.start({
-        duration: 1500,
-        easing: easeOutExpo,
-        to: {
-          x: rotation.x,
-          y: rotation.y,
-          z: rotation.z,
-        },
+    // Animate camera rotation
+    cardRotationAnimation.current?.start({
+      duration: 1500,
+      easing: easeOutExpo,
+      to: {
+        x: rotation.x,
+        y: rotation.y,
+        z: rotation.z,
+      },
+    });
+  }, [step]);
+
+  // Set animation for share step
+  useEffect(() => {
+    if (step !== "share" && step !== "website-demo") {
+      return;
+    }
+
+    // enable zoom animation only for share step
+    const withZoomAnimation = step === "share";
+
+    const { getPosition } = cameraPositions[stepRef.current];
+    const position = getPosition(ratioRef.current);
+
+    const z = withZoomAnimation ? position.z + 30 : position.z;
+    camera.position.set(position.x, position.y, z);
+
+    if (withZoomAnimation) {
+      requestAnimationFrame(() => {
+        cameraPositionAnimation.current?.start({
+          duration: 1500,
+          easing: easeOutExpo,
+          to: {
+            x: position.x,
+            y: position.y,
+            z: position.z,
+          },
+        });
       });
     }
+
+    cardRotationAnimation.current?.start({
+      onFrame: time => {
+        return {
+          y: ((time / 2000) % (Math.PI * 2)) - Math.PI / 3,
+        };
+      },
+    });
   }, [step]);
 
   return (
@@ -223,7 +272,9 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
         ref={cardRef}
         cardNumber="1234 5678 9012 3456"
         ownerName={ownerName}
-        color={color}
+        color={match(color)
+          .with("Silver", "Black", color => color)
+          .otherwise(() => customTexture)}
         expirationDate="12/24"
         cvv="123"
         logo={logo}
