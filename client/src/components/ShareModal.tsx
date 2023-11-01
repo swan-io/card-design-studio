@@ -7,6 +7,8 @@ import { Link } from "@swan-io/lake/src/components/Link";
 import { Space } from "@swan-io/lake/src/components/Space";
 import { colors } from "@swan-io/lake/src/constants/design";
 import { Image, StyleSheet } from "react-native";
+import linkedInIconUrl from "../assets/linkedin.svg?url";
+import xIconUrl from "../assets/x.svg?url";
 import { t } from "../utils/i18n";
 
 const styles = StyleSheet.create({
@@ -55,7 +57,7 @@ export const ShareModal = ({ visible, configId, onPressClose }: Props) => {
       <Space height={16} />
 
       <Link to={linkedInUrl} target="_blank" style={styles.link}>
-        <Image source={{ uri: "/assets/linkedin.svg" }} style={styles.logo} alt="LinkedIn" />
+        <Image source={{ uri: linkedInIconUrl }} style={styles.logo} alt="LinkedIn" />
         <Space width={4} />
         <LakeText color={colors.live[500]}>{t("shareModal.shareOnLinkedIn")}</LakeText>
         <Space width={4} />
@@ -65,7 +67,7 @@ export const ShareModal = ({ visible, configId, onPressClose }: Props) => {
       <Space height={16} />
 
       <Link to={xUrl} target="_blank" style={styles.link}>
-        <Image source={{ uri: "/assets/x.svg" }} style={styles.logo} alt="X" />
+        <Image source={{ uri: xIconUrl }} style={styles.logo} alt="X" />
         <Space width={4} />
         <LakeText color={colors.live[500]}>{t("shareModal.shareOnX")}</LakeText>
         <Space width={4} />
