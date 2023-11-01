@@ -31,7 +31,7 @@
     "build-server": "tsc --project server/tsconfig.json",
     "build-client": "vite build --config client/vite.config.ts",
     "build": "yarn clean && yarn build-server && yarn build-client",
-    "start": "node server/dist/index.js"
+    "start": "node -r dotenv/config server/dist/index.js"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
