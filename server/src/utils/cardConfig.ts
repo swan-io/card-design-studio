@@ -14,6 +14,8 @@ const credentials =
     : undefined;
 
 const s3 = new S3({
+  endpoint: env.S3_ENDPOINT.defined === true ? env.S3_ENDPOINT.value : undefined,
+  forcePathStyle: env.S3_ENDPOINT.defined === true,
   credentials,
   region: env.AWS_REGION,
 });

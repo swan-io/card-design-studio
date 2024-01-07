@@ -11,6 +11,7 @@ export const env = validate({
     AWS_SECRET_ACCESS_KEY: optional(string),
     AWS_REGION: string,
     S3_BUCKET_NAME: string,
+    S3_ENDPOINT: optional(string),
   },
 });
 
