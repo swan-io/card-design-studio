@@ -51,6 +51,12 @@ export type CardConfigInfo = CardConfig & {
   screenshotUrl: string | null;
 };
 
+export type CreateConfigResponse = {
+  id: string;
+  screenshotUrl: string | null;
+  shareUrl: string;
+};
+
 const isScreenshotExists = async (id: string): Promise<boolean> => {
   const data = await s3.listObjectsV2({
     Bucket: env.S3_BUCKET_NAME,
@@ -104,7 +110,7 @@ const generateConfigId = async (name: string, canOverwrite: boolean): Promise<st
   return getUniqueConfigId(id);
 };
 
-export const saveCardConfig = async (cardConfig: CreateConfig): Promise<CardConfigInfo> => {
+export const saveCardConfig = async (cardConfig: CreateConfig): Promise<CreateConfigResponse> => {
   const id = await generateConfigId(cardConfig.name, cardConfig.overwrite === true);
 
   if (cardConfig.generateScreenshot === true) {
@@ -119,10 +125,7 @@ export const saveCardConfig = async (cardConfig: CreateConfig): Promise<CardConf
   });
 
   return {
-    name: cardConfig.name,
-    logo: cardConfig.logo,
-    logoScale: cardConfig.logoScale,
-    color: cardConfig.color,
+    id,
     shareUrl: `${APP_URL}/share/${id}`,
     screenshotUrl:
       cardConfig.generateScreenshot === true ? `${APP_URL}/api/config/${id}/screenshot` : null,
