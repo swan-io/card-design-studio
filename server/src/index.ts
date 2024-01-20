@@ -36,9 +36,9 @@ const start = async () => {
 
     const body = parsedBody.data;
 
-    const configId = await saveCardConfig(body);
+    const configInfo = await saveCardConfig(body);
 
-    return reply.status(201).send({ configId });
+    return reply.status(201).send(configInfo);
   });
 
   app.get("/api/config/:id", async (request, reply) => {
