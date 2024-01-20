@@ -15,6 +15,7 @@ import { Router } from "./utils/routes";
 import { AsyncData } from "@swan-io/boxed";
 import { isNotNullish } from "@swan-io/lake/src/utils/nullish";
 import { createYourBrandSvg } from "./utils/svg";
+import { LoadConfigOverlay } from "./components/LoadConfigOverlay";
 const Card3dScene = lazy(() => import("./components/Card3dScene"));
 
 const styles = StyleSheet.create({
@@ -25,12 +26,13 @@ const styles = StyleSheet.create({
 });
 
 export const App = () => {
-  const route = Router.useRoute(["ConfigCard", "Share", "WebsiteDemo"]);
+  const route = Router.useRoute(["ConfigCard", "Share", "Screenshot", "WebsiteDemo"]);
   const [step, setStep] = useState<ConfigStep>(() =>
     match(route?.name)
       .returnType<ConfigStep>()
       .with("ConfigCard", () => "welcome")
       .with("Share", () => "share")
+      .with("Screenshot", () => "screenshot")
       .with("WebsiteDemo", () => "website-demo")
       .with(P.nullish, () => "welcome")
       .exhaustive(),
@@ -108,6 +110,9 @@ export const App = () => {
         </Suspense>
 
         {match(route)
+          .with({ name: "Screenshot" }, ({ params }) => (
+            <LoadConfigOverlay configId={params.configId} onLoaded={setCardConfig} />
+          ))
           .with({ name: "Share" }, ({ params }) => (
             <ShareOverlay
               configId={params.configId}

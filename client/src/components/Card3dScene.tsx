@@ -86,6 +86,12 @@ const cameraPositions: Record<
     },
     rotation: new Vector3(0, 0, 0),
   },
+  screenshot: {
+    getPosition: () => {
+      return new Vector3(-0.6, 0, 9);
+    },
+    rotation: new Vector3(0, 0.35, 0),
+  },
   "website-demo": {
     getPosition: ratio => {
       const z = 18 / Math.min(1, ratio * 1.7);
