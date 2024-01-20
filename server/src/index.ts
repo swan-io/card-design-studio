@@ -5,7 +5,12 @@ import fastify from "fastify";
 import fs from "fs";
 import path from "pathe";
 import { createViteDevServer } from "./client/devServer";
-import { cardConfigSchema, getCardConfig, saveCardConfig } from "./utils/cardConfig";
+import {
+  getCardConfig,
+  saveCardConfig,
+  createConfigSchema,
+  getScreenshot,
+} from "./utils/cardConfig";
 import { clientEnv, env } from "./utils/env";
 
 const PORT = 8080;
@@ -23,7 +28,7 @@ const start = async () => {
   });
 
   app.post("/api/config", async (request, reply) => {
-    const parsedBody = cardConfigSchema.safeParse(request.body);
+    const parsedBody = createConfigSchema.safeParse(request.body);
 
     if (!parsedBody.success) {
       return reply.badRequest();
@@ -46,6 +51,21 @@ const start = async () => {
       None: () => reply.notFound(),
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       Some: config => reply.status(200).send(config),
+    });
+  });
+
+  app.get("/api/config/:id/screenshot", async (request, reply) => {
+    // @ts-expect-error
+    const configId: string = request.params.id; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+
+    const screenshot = await getScreenshot(configId);
+
+    return screenshot.match({
+      None: () => reply.notFound(),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      Some: stream => {
+        return reply.type("image/png").header("cache-control", `public, max-age=0`).send(stream);
+      },
     });
   });
 
