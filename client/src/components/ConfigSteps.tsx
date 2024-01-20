@@ -416,13 +416,13 @@ export const CompletedStep = ({
   onLogoScaleChange,
 }: CompletedStepProps) => {
   const [editing, setEditing] = useState(false);
-  const [shareState, setShareState] = useState<AsyncData<Result<{ configId: string }, unknown>>>(
+  const [shareState, setShareState] = useState<AsyncData<Result<CreateConfigResponse, unknown>>>(
     AsyncData.NotAsked(),
   );
   const [shareModalClosed, setShareModalClosed] = useState(false);
 
   const configId = match(shareState)
-    .with(AsyncData.P.Done(Result.P.Ok(P.select())), ({ configId }) => Option.Some(configId))
+    .with(AsyncData.P.Done(Result.P.Ok(P.select())), ({ id }) => Option.Some(id))
     .otherwise(() => Option.None());
 
   const shareConfig = () => {
@@ -449,7 +449,7 @@ export const CompletedStep = ({
       .then(async response => {
         const data = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
-        if (isMatching({ configId: P.string }, data)) {
+        if (isMatching({ id: P.string, screenshotUrl: null, shareUrl: P.string }, data)) {
           setShareState(AsyncData.Done(Result.Ok(data)));
         } else {
           setShareState(AsyncData.Done(Result.Error(data)));
