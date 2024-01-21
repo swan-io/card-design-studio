@@ -6,19 +6,11 @@ COPY . .
 
 RUN yarn add shx -W --ignore-scripts && \
     yarn install --ignore-scripts && \
-    yarn playwright install && \
+    yarn playwright install --with-deps && \
     yarn build
-
-###
-
-FROM cgr.dev/chainguard/node:latest
-
-WORKDIR /app
-
-COPY --chown=node:node --from=builder /app ./
 
 ENV NODE_ENV=production
 
 EXPOSE 8080
 
-CMD ["/usr/bin/npm", "start"]
+CMD ["npm", "start"]
