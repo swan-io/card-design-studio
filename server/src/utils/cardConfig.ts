@@ -1,7 +1,6 @@
 import { S3 } from "@aws-sdk/client-s3";
 import type { MultipartFile } from "@fastify/multipart";
 import { Option } from "@swan-io/boxed";
-import { isNotNullish } from "@swan-io/lake/src/utils/nullish";
 import deburr from "lodash/deburr";
 import snakeCase from "lodash/snakeCase";
 import { chromium } from "playwright";
@@ -61,6 +60,8 @@ export type CreateConfigResponse = {
   screenshotUrl: string | null;
   shareUrl: string;
 };
+
+const isNotNullish = <T>(value: T | null | undefined): value is T => value != null;
 
 export const parseMultiPartFormData = async (data: MultipartFile): Promise<unknown> => {
   const logo = await stringifyImage(data.file, data.mimetype);
@@ -130,7 +131,11 @@ const generateScreenshot = async (id: string): Promise<Buffer> => {
 
   await page.waitForTimeout(1000);
 
-  return page.screenshot();
+  const screenshot = await page.screenshot();
+
+  await browser.close();
+
+  return screenshot;
 };
 
 const isConfigExists = async (id: string): Promise<boolean> => {
