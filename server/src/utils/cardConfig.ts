@@ -10,8 +10,7 @@ import { z } from "zod";
 import { env } from "./env";
 import { stringifyImage } from "./image";
 
-// const APP_URL = "https://card-design-studio.swan.io";
-const APP_URL = "http://localhost:8080";
+const APP_URL = "https://card-design-studio.swan.io";
 
 const credentials =
   env.AWS_ACCESS_KEY_ID.defined === true && env.AWS_SECRET_ACCESS_KEY.defined === true
