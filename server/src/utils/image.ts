@@ -20,7 +20,7 @@ export const stringifyImage = async (
     const buffer = Buffer.concat(chunks);
     const string = match(mimetype)
       .with("image/svg+xml", () => buffer.toString())
-      .with("image/png", () => `data:image/png;base64,${buffer.toString("base64url")}`)
+      .with("image/png", () => `data:image/png;base64,${buffer.toString("base64")}`)
       .exhaustive();
 
     return Result.Ok(string);
