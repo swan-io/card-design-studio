@@ -1,4 +1,5 @@
 import replyFrom from "@fastify/reply-from";
+import multipart from "@fastify/multipart";
 import sensible from "@fastify/sensible";
 import fastifyStatic from "@fastify/static";
 import fastify from "fastify";
@@ -10,6 +11,7 @@ import {
   saveCardConfig,
   createConfigSchema,
   getScreenshot,
+  parseMultiPartFormData,
 } from "./utils/cardConfig";
 import { clientEnv, env } from "./utils/env";
 
@@ -18,6 +20,7 @@ const PORT = 8080;
 const start = async () => {
   const app = fastify();
 
+  await app.register(multipart);
   await app.register(sensible);
   await app.register(replyFrom);
 
@@ -28,7 +31,17 @@ const start = async () => {
   });
 
   app.post("/api/config", async (request, reply) => {
-    const parsedBody = createConfigSchema.safeParse(request.body);
+    let inputBody = request.body;
+    try {
+      const multipartData = await request.file();
+      if (multipartData != null) {
+        inputBody = await parseMultiPartFormData(multipartData);
+      }
+    } catch (e) {
+      // do nothing
+    }
+
+    const parsedBody = createConfigSchema.safeParse(inputBody);
 
     if (!parsedBody.success) {
       return reply.badRequest();

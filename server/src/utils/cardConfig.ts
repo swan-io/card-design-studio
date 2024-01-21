@@ -1,9 +1,13 @@
 import { S3 } from "@aws-sdk/client-s3";
+import type { MultipartFile } from "@fastify/multipart";
 import { Option } from "@swan-io/boxed";
+import { isNotNullish } from "@swan-io/lake/src/utils/nullish";
 import deburr from "lodash/deburr";
 import snakeCase from "lodash/snakeCase";
+import { match } from "ts-pattern";
 import { z } from "zod";
 import { env } from "./env";
+import { stringifyImage } from "./image";
 
 const APP_URL = "https://card-design-studio.swan.io";
 
@@ -55,6 +59,35 @@ export type CreateConfigResponse = {
   id: string;
   screenshotUrl: string | null;
   shareUrl: string;
+};
+
+export const parseMultiPartFormData = async (data: MultipartFile): Promise<unknown> => {
+  const logo = await stringifyImage(data.file, data.mimetype);
+  if (logo.isError()) {
+    console.error(logo.getError());
+    return null;
+  }
+
+  const entries = Object.entries(data.fields)
+    .map(([key, value]) => {
+      // @ts-expect-error
+      const fieldValue = value.value as string;
+
+      return match(key)
+        .with("name", () => [key, fieldValue] as const)
+        .with("logoScale", () => [key, parseFloat(fieldValue)] as const)
+        .with("color", () => [key, fieldValue] as const)
+        .with("generateScreenshot", () => [key, fieldValue === "true"] as const)
+        .with("overwrite", () => [key, fieldValue === "true"] as const)
+        .otherwise(() => null);
+    })
+    .filter(isNotNullish);
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return {
+    ...Object.fromEntries(entries),
+    logo: logo.value,
+  };
 };
 
 const isScreenshotExists = async (id: string): Promise<boolean> => {
