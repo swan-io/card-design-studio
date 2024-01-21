@@ -109,6 +109,10 @@ const saveCardScreenshot = async (id: string, screenshot: Buffer): Promise<void>
   });
 };
 
+/**
+ * This function can be used only when the config is already saved to s3.
+ * It start a browser opening the design studio and take a screenshot.
+ */
 const generateScreenshot = async (id: string): Promise<Buffer> => {
   const browser = await chromium.launch();
   const context = await browser.newContext();
@@ -117,6 +121,13 @@ const generateScreenshot = async (id: string): Promise<Buffer> => {
   await page.goto(`${APP_URL}/screenshot/${id}`);
 
   await page.waitForLoadState("networkidle");
+
+  // The card design studio has a cookie banner that we need to close to take a screenshot
+  const button = await page.$("text=Reject All");
+  if (button !== null) {
+    await button.click();
+  }
+
   await page.waitForTimeout(1000);
 
   return page.screenshot();
