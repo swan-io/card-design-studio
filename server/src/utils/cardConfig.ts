@@ -114,7 +114,7 @@ const generateScreenshot = async (id: string): Promise<Buffer> => {
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.setViewportSize({ width: 1200, height: 630 });
+  await page.setViewportSize({ width: 1600, height: 1200 });
   await page.goto(`${APP_URL}/screenshot/${id}`);
 
   await page.waitForLoadState("networkidle");
