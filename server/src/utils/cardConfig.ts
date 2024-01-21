@@ -4,12 +4,14 @@ import { Option } from "@swan-io/boxed";
 import { isNotNullish } from "@swan-io/lake/src/utils/nullish";
 import deburr from "lodash/deburr";
 import snakeCase from "lodash/snakeCase";
+import { chromium } from "playwright";
 import { match } from "ts-pattern";
 import { z } from "zod";
 import { env } from "./env";
 import { stringifyImage } from "./image";
 
-const APP_URL = "https://card-design-studio.swan.io";
+// const APP_URL = "https://card-design-studio.swan.io";
+const APP_URL = "http://localhost:8080";
 
 const credentials =
   env.AWS_ACCESS_KEY_ID.defined === true && env.AWS_SECRET_ACCESS_KEY.defined === true
@@ -108,8 +110,17 @@ const saveCardScreenshot = async (id: string, screenshot: Buffer): Promise<void>
   });
 };
 
-const generateScreenshot = async (_id: string): Promise<Buffer> => {
-  return Promise.resolve(Buffer.from("TODO"));
+const generateScreenshot = async (id: string): Promise<Buffer> => {
+  const browser = await chromium.launch();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 1200, height: 630 });
+  await page.goto(`${APP_URL}/screenshot/${id}`);
+
+  await page.waitForLoadState("networkidle");
+  await page.waitForTimeout(1000);
+
+  return page.screenshot();
 };
 
 const isConfigExists = async (id: string): Promise<boolean> => {
@@ -146,22 +157,29 @@ const generateConfigId = async (name: string, canOverwrite: boolean): Promise<st
 export const saveCardConfig = async (cardConfig: CreateConfig): Promise<CreateConfigResponse> => {
   const id = await generateConfigId(cardConfig.name, cardConfig.overwrite === true);
 
-  if (cardConfig.generateScreenshot === true) {
-    const screenshot = await generateScreenshot(id);
-    await saveCardScreenshot(id, screenshot);
-  }
-
+  // Save config to s3
   await s3.putObject({
     Bucket: env.S3_BUCKET_NAME,
     Key: getConfigFileKey(id),
     Body: JSON.stringify(cardConfig),
   });
 
+  // Try to generate a screenshot
+  if (cardConfig.generateScreenshot === true) {
+    try {
+      const screenshot = await generateScreenshot(id);
+      await saveCardScreenshot(id, screenshot);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const screenshotUploaded = await isScreenshotExists(id);
+
   return {
     id,
     shareUrl: `${APP_URL}/share/${id}`,
-    screenshotUrl:
-      cardConfig.generateScreenshot === true ? `${APP_URL}/api/config/${id}/screenshot` : null,
+    screenshotUrl: screenshotUploaded ? `${APP_URL}/api/config/${id}/screenshot` : null,
   };
 };
 

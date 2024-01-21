@@ -6,6 +6,7 @@ COPY . .
 
 RUN yarn add shx -W --ignore-scripts && \
     yarn install --ignore-scripts && \
+    yarn playwright install && \
     yarn build
 
 ###
