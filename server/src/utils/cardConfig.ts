@@ -126,7 +126,7 @@ const generateScreenshot = async (id: string): Promise<Buffer> => {
     width: SCREENSHOT_WIDTH + CROP_PADDING * 2,
     height: SCREENSHOT_HEIGHT + CROP_PADDING * 2,
   });
-  await page.goto(`${APP_URL}/screenshot/${id}`);
+  await page.goto(`http://localhost:8080/screenshot/${id}`);
 
   await page.waitForLoadState("networkidle");
 
