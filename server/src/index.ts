@@ -18,7 +18,9 @@ import { clientEnv, env } from "./utils/env";
 const PORT = 8080;
 
 const start = async () => {
-  const app = fastify();
+  const app = fastify({
+    logger: {},
+  });
 
   await app.register(multipart);
   await app.register(sensible);
