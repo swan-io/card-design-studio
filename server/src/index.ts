@@ -12,12 +12,17 @@ import {
   createConfigSchema,
   getScreenshot,
   parseMultiPartFormData,
+  startBrowser,
 } from "./utils/cardConfig";
 import { clientEnv, env } from "./utils/env";
 
 const PORT = 8080;
 
 const start = async () => {
+  console.log("Starting browser...");
+  await startBrowser();
+  console.log("Browser started");
+
   const app = fastify({
     logger: {},
   });
