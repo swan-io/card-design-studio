@@ -3,7 +3,7 @@ import type { MultipartFile } from "@fastify/multipart";
 import { Option } from "@swan-io/boxed";
 import deburr from "lodash/deburr";
 import snakeCase from "lodash/snakeCase";
-import { chromium } from "playwright";
+import { Browser, chromium } from "playwright";
 import { match } from "ts-pattern";
 import { z } from "zod";
 import { env } from "./env";
@@ -110,16 +110,25 @@ const saveCardScreenshot = async (id: string, screenshot: Buffer): Promise<void>
   });
 };
 
+let browser: Browser | null = null;
+export const startBrowser = async (): Promise<void> => {
+  browser = await chromium.launch();
+};
+
 /**
  * This function can be used only when the config is already saved to s3.
  * It start a browser opening the design studio and take a screenshot.
  */
 const generateScreenshot = async (id: string): Promise<Buffer> => {
+  // Should never happen but keep this condition for type safety
+  if (browser == null) {
+    throw new Error("Browser not started");
+  }
+
   const SCREENSHOT_WIDTH = 1600;
   const SCREENSHOT_HEIGHT = 1200;
   const CROP_PADDING = 75;
 
-  const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.setViewportSize({
@@ -148,7 +157,7 @@ const generateScreenshot = async (id: string): Promise<Buffer> => {
     },
   });
 
-  await browser.close();
+  await context.close();
 
   return screenshot;
 };
