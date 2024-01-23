@@ -88,7 +88,7 @@ const cameraPositions: Record<
   },
   screenshot: {
     getPosition: () => {
-      return new Vector3(-0.6, 0, 9);
+      return new Vector3(-0.6, 0, 10);
     },
     rotation: new Vector3(0, 0.35, 0),
   },
