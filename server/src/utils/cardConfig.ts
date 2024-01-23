@@ -115,10 +115,17 @@ const saveCardScreenshot = async (id: string, screenshot: Buffer): Promise<void>
  * It start a browser opening the design studio and take a screenshot.
  */
 const generateScreenshot = async (id: string): Promise<Buffer> => {
+  const SCREENSHOT_WIDTH = 1600;
+  const SCREENSHOT_HEIGHT = 1200;
+  const CROP_PADDING = 75;
+
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.setViewportSize({ width: 1600, height: 1200 });
+  await page.setViewportSize({
+    width: SCREENSHOT_WIDTH + CROP_PADDING * 2,
+    height: SCREENSHOT_HEIGHT + CROP_PADDING * 2,
+  });
   await page.goto(`${APP_URL}/screenshot/${id}`);
 
   await page.waitForLoadState("networkidle");
@@ -131,7 +138,15 @@ const generateScreenshot = async (id: string): Promise<Buffer> => {
 
   await page.waitForTimeout(1000);
 
-  const screenshot = await page.screenshot();
+  // clip the screenshot to hide the the cookie element at bottom left
+  const screenshot = await page.screenshot({
+    clip: {
+      x: CROP_PADDING,
+      y: CROP_PADDING,
+      width: SCREENSHOT_WIDTH,
+      height: SCREENSHOT_HEIGHT,
+    },
+  });
 
   await browser.close();
 
