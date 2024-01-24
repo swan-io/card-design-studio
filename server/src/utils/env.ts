@@ -6,11 +6,13 @@ export const env = validate({
   env: process.env,
   validators: {
     NODE_ENV: oneOf("development", "production"),
+    APP_URL: optional(string),
     CLIENT_GOOGLE_TAG_MANAGER_ID: string,
     AWS_ACCESS_KEY_ID: optional(string),
     AWS_SECRET_ACCESS_KEY: optional(string),
     AWS_REGION: string,
     S3_BUCKET_NAME: string,
+    S3_ENDPOINT: optional(string),
   },
 });
 

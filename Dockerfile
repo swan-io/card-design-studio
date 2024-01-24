@@ -10,7 +10,7 @@ RUN yarn add shx -W --ignore-scripts && \
 
 ###
 
-FROM cgr.dev/chainguard/node:latest
+FROM mcr.microsoft.com/playwright:v1.41.1-jammy
 
 WORKDIR /app
 
@@ -20,4 +20,4 @@ ENV NODE_ENV=production
 
 EXPOSE 8080
 
-CMD ["/usr/bin/npm", "start"]
+CMD ["npm", "start"]

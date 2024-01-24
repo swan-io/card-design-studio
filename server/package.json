@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.428.0",
+    "@fastify/multipart": "8.1.0",
     "@fastify/reply-from": "9.4.0",
     "@fastify/sensible": "5.3.0",
     "@fastify/static": "6.11.2",
@@ -27,6 +28,7 @@
     "get-port": "7.0.0",
     "lodash": "4.17.21",
     "pathe": "1.1.1",
+    "playwright": "1.41.1",
     "ts-pattern": "5.0.5",
     "valienv": "0.5.0",
     "zod": "3.22.4"

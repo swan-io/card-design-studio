@@ -3,6 +3,7 @@ import { createRouter } from "@swan-io/chicane";
 export const Router = createRouter({
   ConfigCard: "/",
   Share: "/share/:configId",
+  Screenshot: "/screenshot/:configId",
   WebsiteDemo: "/website-demo?:backgroundColor&:cardColor&:cardHolderName",
 });
 
