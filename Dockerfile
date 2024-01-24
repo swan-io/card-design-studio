@@ -6,8 +6,15 @@ COPY . .
 
 RUN yarn add shx -W --ignore-scripts && \
     yarn install --ignore-scripts && \
-    yarn playwright install --with-deps && \
     yarn build
+
+###
+
+FROM mcr.microsoft.com/playwright:v1.41.1-jammy
+
+WORKDIR /app
+
+COPY --chown=node:node --from=builder /app ./
 
 ENV NODE_ENV=production
 
