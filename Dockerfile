@@ -1,4 +1,4 @@
-FROM node:18 AS builder
+FROM node:24 AS builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN yarn add shx -W --ignore-scripts && \
 
 ###
 
-FROM mcr.microsoft.com/playwright:v1.41.1-jammy
+FROM mcr.microsoft.com/playwright:v1.59.1-noble
 
 WORKDIR /app
 
