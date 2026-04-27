@@ -2,24 +2,26 @@ name: Pull Request
 
 on:
   pull_request:
-  merge_group:
 
 jobs:
-  Setup:
-    uses: swan-io/workflow-templates/.github/workflows/setup.yml@feat-enp/clean-workflow-templates
+  build:
+    name: Typecheck & Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
 
-  Branch:
-    uses: swan-io/workflow-templates/.github/workflows/pnpm-branch.yml@feat-enp/clean-workflow-templates
-    needs: Setup
-    if: ${{ needs.Setup.outputs.is_release_pr == 'false' }}
-    secrets:
-      APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
-      AWS_ECR_PASSWORD: ${{ secrets.AWS_ECR_PASSWORD }}
-      HIVE_TOKEN: ${{ secrets.HIVE_TOKEN }}
-      AWS_ROLE: ${{ secrets.AWS_ROLE }}
-      WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
-      WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
 
-    with:
-      CONFIG_JSON: ${{ needs.Setup.outputs.config }}
-      SOURCE_BRANCH: ${{ needs.Setup.outputs.source_branch }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Build
+        run: yarn build-server && yarn build-client

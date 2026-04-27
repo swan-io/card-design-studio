@@ -6,22 +6,25 @@ on:
       - published
 
 jobs:
+  docker:
+    name: Build & Push Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
 
-  Setup:
-    uses: swan-io/workflow-templates/.github/workflows/setup.yml@feat-enp/clean-workflow-templates
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  Release:
-    uses: swan-io/workflow-templates/.github/workflows/pnpm-release.yml@feat-enp/clean-workflow-templates
-    needs: Setup
-    secrets:
-      AWS_ROLE: ${{ secrets.AWS_ROLE }}
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      DEPLOY_SWAN_TOKEN: ${{ secrets.DEPLOY_SWAN_TOKEN }}
-      AWS_ECR_USERNAME: ${{ secrets.AWS_ECR_USERNAME }}
-      AWS_ECR_PASSWORD: ${{ secrets.AWS_ECR_PASSWORD }}
-      GITLAB_TOKEN_GROUP_CI: ${{ secrets.GITLAB_TOKEN_GROUP_CI }}
-      PRIVATE_KEY_GITHUB: ${{ secrets.PRIVATE_KEY_GITHUB }}
-      E2E_GITHUB_TOKEN: ${{ secrets.E2E_GITHUB_TOKEN }}
-
-    with:
-      CONFIG_JSON: ${{ needs.Setup.outputs.config }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/swan-io/card-design-studio:${{ github.event.release.tag_name }}
+            ghcr.io/swan-io/card-design-studio:latest

@@ -1,38 +1,29 @@
 name: Merged on Main Branch
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types:
-      - closed
 
 jobs:
+  build:
+    name: Typecheck & Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
 
-  Setup:
-    uses: swan-io/workflow-templates/.github/workflows/setup.yml@feat-enp/clean-workflow-templates
-    if: ${{ github.event.pull_request.merged == true }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
 
-  Main:
-    uses: swan-io/workflow-templates/.github/workflows/pnpm-main.yml@feat-enp/clean-workflow-templates
-    needs: Setup
-    if: ${{ github.event.pull_request.merged == true }}
-    secrets:
-      APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
-      AWS_ECR_PASSWORD: ${{ secrets.AWS_ECR_PASSWORD }}
-      AWS_ROLE: ${{ secrets.AWS_ROLE }}
-      HIVE_TOKEN: ${{ secrets.HIVE_TOKEN }}
-      WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
-      WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
-      SWAN_CHANGESET_BOT_APP_ID: ${{ secrets.SWAN_CHANGESET_BOT_APP_ID }}
-      SWAN_CHANGESET_BOT_PRIVATE_KEY: ${{ secrets.SWAN_CHANGESET_BOT_PRIVATE_KEY }}
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      DEPLOY_SWAN_TOKEN: ${{ secrets.DEPLOY_SWAN_TOKEN }}
-      AWS_ECR_USERNAME: ${{ secrets.AWS_ECR_USERNAME }}
-      GITLAB_TOKEN_GROUP_CI: ${{ secrets.GITLAB_TOKEN_GROUP_CI }}
-      PRIVATE_KEY_GITHUB: ${{ secrets.PRIVATE_KEY_GITHUB }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-    with:
-      CONFIG_JSON: ${{ needs.Setup.outputs.config }}
-      SOURCE_BRANCH: ${{ needs.Setup.outputs.source_branch }}
-      IS_RELEASE_PR: ${{ needs.Setup.outputs.is_release_pr }}
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Build
+        run: yarn build-server && yarn build-client
