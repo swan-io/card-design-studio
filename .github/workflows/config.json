@@ -1,0 +1,9 @@
+{
+  "build": {
+    "BUILD_ENABLED": "true",
+    "IMAGE_NAME": "card-design-studio",
+    "WIZ_ENABLED": "true",
+    "WIZ_PROJECT_NAME": "card-design-studio",
+    "APP_NAME": ["card-design-studio"]
+  }
+}

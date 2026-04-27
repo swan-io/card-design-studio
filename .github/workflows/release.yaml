@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+
+  Setup:
+    uses: swan-io/workflow-templates/.github/workflows/setup.yml@feat-enp/clean-workflow-templates
+
+  Release:
+    uses: swan-io/workflow-templates/.github/workflows/pnpm-release.yml@feat-enp/clean-workflow-templates
+    needs: Setup
+    secrets:
+      AWS_ROLE: ${{ secrets.AWS_ROLE }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      DEPLOY_SWAN_TOKEN: ${{ secrets.DEPLOY_SWAN_TOKEN }}
+      AWS_ECR_USERNAME: ${{ secrets.AWS_ECR_USERNAME }}
+      AWS_ECR_PASSWORD: ${{ secrets.AWS_ECR_PASSWORD }}
+      GITLAB_TOKEN_GROUP_CI: ${{ secrets.GITLAB_TOKEN_GROUP_CI }}
+      PRIVATE_KEY_GITHUB: ${{ secrets.PRIVATE_KEY_GITHUB }}
+      E2E_GITHUB_TOKEN: ${{ secrets.E2E_GITHUB_TOKEN }}
+
+    with:
+      CONFIG_JSON: ${{ needs.Setup.outputs.config }}
