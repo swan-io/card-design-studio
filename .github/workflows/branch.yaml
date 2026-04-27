@@ -52,17 +52,6 @@ jobs:
         id: short-sha
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      # - name: Download Wiz CLI
-      #   if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
-      #   run: curl -o wizcli https://downloads.wiz.io/v1/wizcli/latest/wizcli-linux-arm64 && chmod +x wizcli
-
-      # - name: Authenticate to Wiz
-      #   if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
-      #   run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
-      #   env:
-      #     WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
-      #     WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
-
       - name: Build image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         id: build
@@ -72,9 +61,3 @@ jobs:
           context: .
           push: false
           load: true
-
-      # - name: Run wiz-cli docker image scan
-      #   run: ./wizcli scan container-image 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }} --policies "Swan - Vulnerability blocking policy,Swan - Secrets policy,Swan - Sensitive data policy"
-
-      # - name: Fetch digest of Docker image for Graph enrichment
-      #   run: ./wizcli tag 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }} --digest ${{ steps.build.outputs.digest }}
