@@ -45,15 +45,6 @@ jobs:
         with:
           cmd: build-client
 
-      - name: Import Secrets
-        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE }}
-          aws-region: eu-west-1
-
-      - name: Login to ECR Registry
-        uses: aws-actions/amazon-ecr-login@376925c9d111252e87ae59691e5a442dd100ef6a # v2.1.3
-
       - name: Set up Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
@@ -61,47 +52,29 @@ jobs:
         id: short-sha
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - name: Download Wiz CLI
-        if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
-        run: curl -o wizcli https://downloads.wiz.io/v1/wizcli/latest/wizcli-linux-arm64 && chmod +x wizcli
+      # - name: Download Wiz CLI
+      #   if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
+      #   run: curl -o wizcli https://downloads.wiz.io/v1/wizcli/latest/wizcli-linux-arm64 && chmod +x wizcli
 
-      - name: Authenticate to Wiz
-        if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
-        run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
-        env:
-          WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
-          WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
+      # - name: Authenticate to Wiz
+      #   if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
+      #   run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
+      #   env:
+      #     WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
+      #     WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
 
       - name: Build image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         id: build
-        if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
-          context: ${{ inputs.DOCKER_CONTEXT }}
-          file: ${{ inputs.DOCKER_CONTEXT }}/${{ inputs.DOCKERFILE_NAME}}
-          secrets: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          context: .
           push: false
-          tags: 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
           load: true
 
-      - name: Run wiz-cli docker image scan
-        if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
-        run: ./wizcli scan container-image 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }} --policies "Swan - Vulnerability blocking policy,Swan - Secrets policy,Swan - Sensitive data policy"
+      # - name: Run wiz-cli docker image scan
+      #   run: ./wizcli scan container-image 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }} --policies "Swan - Vulnerability blocking policy,Swan - Secrets policy,Swan - Sensitive data policy"
 
-      - name: Fetch digest of Docker image for Graph enrichment
-        if: ${{ inputs.WIZ_ENABLED == 'true' && inputs.PLATFORMS == 'linux/arm64' }}
-        run: ./wizcli tag 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }} --digest ${{ steps.build.outputs.digest }}
-
-      - name: Build image
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
-        with:
-          context: ${{ inputs.DOCKER_CONTEXT }}
-          file: ${{ inputs.DOCKER_CONTEXT }}/${{ inputs.DOCKERFILE_NAME}}
-          secrets: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          push: true
-          tags: 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
-          platforms: ${{ inputs.PLATFORMS }}
+      # - name: Fetch digest of Docker image for Graph enrichment
+      #   run: ./wizcli tag 326954429656.dkr.ecr.eu-west-1.amazonaws.com/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }} --digest ${{ steps.build.outputs.digest }}
