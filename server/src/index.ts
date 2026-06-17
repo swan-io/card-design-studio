@@ -2,7 +2,7 @@ import replyFrom from "@fastify/reply-from";
 import multipart from "@fastify/multipart";
 import sensible from "@fastify/sensible";
 import fastifyStatic from "@fastify/static";
-import fastify from "fastify";
+import fastify, { FastifyRequest } from "fastify";
 import fs from "fs";
 import path from "pathe";
 import { createViteDevServer } from "./client/devServer";
@@ -19,13 +19,38 @@ import { clientEnv, env } from "./utils/env";
 const PORT = 8080;
 
 const start = async () => {
-  console.log("Starting browser...");
-  await startBrowser();
-  console.log("Browser started");
-
   const app = fastify({
-    logger: {},
+    logger: {
+      messageKey: "message",
+      level: "info",
+      formatters: {
+        level(label) {
+          return { level: label };
+        },
+      },
+      serializers: {
+        req(req: FastifyRequest) {
+          return {
+            method: req.method,
+            url: req.url,
+            host: req.hostname,
+            remoteAddress: req.ip,
+            remotePort: req.socket.remotePort,
+          };
+        },
+      },
+      ...(env.NODE_ENV === "development" && {
+        transport: {
+          target: "pino-pretty",
+          options: { colorize: true },
+        },
+      }),
+    },
   });
+
+  app.log.info("Starting browser...");
+  await startBrowser();
+  app.log.info("Browser started");
 
   await app.register(multipart);
   await app.register(sensible);
@@ -119,9 +144,9 @@ const start = async () => {
 
   try {
     await app.listen({ port: PORT, host: "0.0.0.0" });
-    console.log(`server listening on ${PORT}`);
+    app.log.info(`server listening on ${PORT}`);
   } catch (err) {
-    console.error(err);
+    app.log.error(err);
     process.exit(1);
   }
 };
