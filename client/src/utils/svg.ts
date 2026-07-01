@@ -2,6 +2,7 @@ import { encodeBase64 } from "@swan-io/lake/src/utils/base64";
 import { isNotNullish, isNotNullishOrEmpty } from "@swan-io/lake/src/utils/nullish";
 import deburr from "lodash/deburr";
 import { match } from "ts-pattern";
+import DOMPurify from "dompurify";
 
 const BASE64_URI_PREFIX = "data:image/svg+xml;base64,";
 
@@ -27,7 +28,11 @@ export const convertSvgFileToString = (file: File): Promise<string> =>
       if (typeof event.target?.result !== "string") {
         return reject("No content");
       }
-      resolve(event.target.result);
+      const cleaned = DOMPurify.sanitize(event.target.result, {
+        USE_PROFILES: { svg: true, svgFilters: true },
+      });
+
+      resolve(cleaned);
     };
 
     reader.readAsText(file);
