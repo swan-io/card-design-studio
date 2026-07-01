@@ -1,0 +1,14 @@
+**
+
+!package.json
+!yarn.lock
+
+!client/src/**
+!client/package.json
+!client/vite.config.ts
+
+!server/src/**
+!server/package.json
+!server/tsconfig.json
+
+!scripts
