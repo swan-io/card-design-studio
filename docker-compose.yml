@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      APP_URL: "http://localhost:8080"
+      CLIENT_GOOGLE_TAG_MANAGER_ID: " "
+      AWS_ACCESS_KEY_ID: "admin"
+      AWS_SECRET_ACCESS_KEY: "password"
+      AWS_REGION: "us-east-1"
+      S3_BUCKET_NAME: "test-bucket"
+      S3_ENDPOINT: "http://minio:9000"
+    depends_on:
+      createbuckets:
+        condition: service_completed_successfully
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "admin"
+      MINIO_ROOT_PASSWORD: "password"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  createbuckets:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 admin password &&
+      mc mb --ignore-existing local/test-bucket
+      "
+
+volumes:
+  minio-data:

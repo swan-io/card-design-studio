@@ -18,6 +18,15 @@ This project was also an opportunity to learn and experiment with WebGL and thre
 - [threejs](https://threejs.org/) to create 3D scene
 - [react-three-fiber](https://github.com/pmndrs/react-three-fiber) to use threejs with React
 
+## Running the project locally
+
+There is 2 ways to run to project locally:
+
+- by running `yarn dev` to start only the NodeJS server
+- by running `docker-compose up` to start the project in a Docker environment (usefull to check it still works once packaged in Docker container)
+
+> By starting only the NodeJS server with `yarn dev`, features requiring S3 bucket will not work, but you can comment `app` service on docker-compose.yml and use `docker-compose up` to start a Minio instance locally.
+
 ## Technical details about project organization
 
 This app is composed of 2 parts:
