@@ -25,11 +25,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Deploy prod
-        if: ${{ github.repository == 'swan-io/swan-partner-frontend' }}
+        if: ${{ github.repository == 'swan-io/card-design-studio' }}
         run: pnpm deploy-ci
         env:
           TAG: prod-${{ github.ref_name }}
           DEPLOY_SWAN_APP_ID: ${{ secrets.DEPLOY_SWAN_APP_ID }}
           DEPLOY_SWAN_APP_SECRET: ${{ secrets.DEPLOY_SWAN_APP_SECRET }}
           DEPLOY_ENVIRONMENT: prod
-          DEPLOY_APP_NAME: partner-frontend
+          DEPLOY_APP_NAME: card-design-studio
