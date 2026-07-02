@@ -8,7 +8,8 @@ on:
 jobs:
   test-and-build:
     name: Test & build
-    runs-on: ubuntu-24.04-arm
+    # runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-24.04
     permissions:
       contents: read # This is required for actions/checkout
       id-token: write # This is required for requesting the JWT
@@ -60,7 +61,6 @@ jobs:
           context: .
           file: Dockerfile-swan
           push: true
-          platforms: linux/arm64
           tags: |
             ${{ secrets.DOCKER_REGISTRY }}/card-design-studio:master-${{ github.sha }}
             ${{ secrets.DOCKER_REGISTRY }}/card-design-studio:master-${{ github.ref_name }}
