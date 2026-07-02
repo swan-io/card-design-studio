@@ -7,7 +7,6 @@ import path from "pathe";
 
 export async function createViteDevServer() {
   const liveReloadServer = http.createServer();
-  // @ts-expect-error: Vite is installed at root level, we import it dynamically only when running the dev server
   const { createServer } = await import("vite");
   const { default: getPort } = await import("get-port");
   const mainServerPort = await getPort();
