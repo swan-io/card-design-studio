@@ -47,6 +47,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "@octokit/auth-app": "8.2.0",
+    "@octokit/rest": "22.0.1",
     "@types/node": "20.8.6",
     "@typescript-eslint/eslint-plugin": "6.7.5",
     "@typescript-eslint/parser": "6.7.5",
