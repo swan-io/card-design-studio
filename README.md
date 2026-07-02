@@ -22,10 +22,10 @@ This project was also an opportunity to learn and experiment with WebGL and thre
 
 There are 2 ways to run the project locally:
 
-- by running `yarn dev` to start only the NodeJS server
+- by running `pnpm dev` to start only the NodeJS server
 - by running `docker-compose up` to start the project in a Docker environment (useful to check it still works once packaged in Docker container)
 
-> By starting only the NodeJS server with `yarn dev`, features requiring S3 bucket will not work, but you can comment `app` service on docker-compose.yml and use `docker-compose up` to start a Minio instance locally.
+> By starting only the NodeJS server with `pnpm dev`, features requiring S3 bucket will not work, but you can comment `app` service on docker-compose.yml and use `docker-compose up` to start a Minio instance locally.
 
 ## Technical details about project organization
 
@@ -45,7 +45,7 @@ The server is a fastify app with those routes:
 
 The app will behave in a different way dependending on the `NODE_ENV` environment variable:
 
-- `production` will serve static files from `/server/dist` folder (this folder is created by Vite in `yarn build` command)
+- `production` will serve static files from `/server/dist` folder (this folder is created by Vite in `pnpm build` command)
 - otherwise the server will start a Vite dev server and proxy all requests to it
 
 > The config file id is the name of the card holder with those transformations:

@@ -1,12 +1,15 @@
 FROM node:24 AS builder
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+RUN corepack enable
+
 WORKDIR /app
 
 COPY . .
 
-RUN yarn add shx -W --ignore-scripts && \
-    yarn install --ignore-scripts && \
-    yarn build
+RUN pnpm install --frozen-lockfile --ignore-scripts && \
+    pnpm build
 
 ###
 

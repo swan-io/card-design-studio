@@ -4,9 +4,9 @@
   "version": "2.0.0",
   "license": "MIT",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
   "engines": {
-    "node": ">=18.0.0",
-    "yarn": "^1.22.0"
+    "node": "^24.12.0"
   },
   "author": "Frederic Godin <godin.fred8@gmail.com>",
   "homepage": "https://github.com/swan-io/card-design-studio",
@@ -30,7 +30,7 @@
     "clean": "shx rm -rf server/dist",
     "build-server": "tsc --project server/tsconfig.json",
     "build-client": "vite build --config client/vite.config.ts",
-    "build": "yarn clean && yarn build-server && yarn build-client",
+    "build": "pnpm clean && pnpm build-server && pnpm build-client",
     "start": "node server/dist/index.js"
   },
   "lint-staged": {
@@ -61,6 +61,7 @@
     "pathe": "2.0.3",
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "3.2.3",
+    "shx": "0.4.0",
     "terser": "5.21.0",
     "tsx": "4.22.4",
     "type-fest": "4.4.0",

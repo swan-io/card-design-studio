@@ -1,0 +1,9 @@
+packages:
+  - "client"
+  - "server"
+allowBuilds:
+  "@swc/core": true
+  core-js: true
+  esbuild: true
+minimumReleaseAgeExclude:
+  - vite@8.1.2

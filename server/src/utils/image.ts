@@ -11,7 +11,7 @@ export const stringifyImage = async (
   }
 
   try {
-    const chunks: Buffer[] = [];
+    const chunks: Uint8Array[] = [];
 
     for await (const chunk of file) {
       chunks.push(chunk); // eslint-disable-line @typescript-eslint/no-unsafe-argument
