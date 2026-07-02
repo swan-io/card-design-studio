@@ -2,11 +2,12 @@
   "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "nodenext",
     "target": "ES2018",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "rootDir": "./src",
     "outDir": "dist",
-    "moduleResolution": "Node",
+    "moduleResolution": "nodenext",
 
     "allowJs": false,
     "strict": true,

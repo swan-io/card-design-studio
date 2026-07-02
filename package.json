@@ -23,6 +23,7 @@
   "scripts": {
     "prepare": "git config --local core.hooksPath .hooks",
     "format": "prettier '**/*' --ignore-unknown --write",
+    "lint": "eslint . --ext .ts,.tsx --fix",
     "link-locale-lake": "sh scripts/lake/link-locale-lake.sh",
     "unlink-locale-lake": "sh scripts/lake/unlink-locale-lake.sh",
     "typecheck": "tsc --noEmit",
@@ -31,6 +32,7 @@
     "build-server": "tsc --project server/tsconfig.json",
     "build-client": "vite build --config client/vite.config.ts",
     "build": "pnpm clean && pnpm build-server && pnpm build-client",
+    "deploy-ci": "node scripts/deploy/deploy.js",
     "start": "node server/dist/index.js"
   },
   "lint-staged": {
@@ -46,6 +48,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "@octokit/auth-app": "8.2.0",
+    "@octokit/rest": "22.0.1",
     "@types/node": "20.8.6",
     "@typescript-eslint/eslint-plugin": "6.7.5",
     "@typescript-eslint/parser": "6.7.5",
@@ -65,7 +69,7 @@
     "terser": "5.21.0",
     "tsx": "4.22.4",
     "type-fest": "4.4.0",
-    "typescript": "5.2.2",
+    "typescript": "6.0.3",
     "valienv": "0.5.0",
     "vite": "8.1.2"
   }
