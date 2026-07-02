@@ -31,6 +31,7 @@
     "build-server": "tsc --project server/tsconfig.json",
     "build-client": "vite build --config client/vite.config.ts",
     "build": "pnpm clean && pnpm build-server && pnpm build-client",
+    "deploy-ci": "node scripts/deploy/deploy.js",
     "start": "node server/dist/index.js"
   },
   "lint-staged": {
