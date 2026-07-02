@@ -24,7 +24,10 @@ async function getInstallationToken(appId, privateKey) {
     repo: REPO,
   });
 
-  const { token } = await auth({ type: "installation", installationId: installation.id });
+  const { token } = await auth({
+    type: "installation",
+    installationId: installation.id,
+  });
   return token;
 }
 
@@ -68,7 +71,12 @@ async function commitViaGitHubAPI(octokit, message, files, maxRetries = 3) {
             content: Buffer.from(content).toString("base64"),
             encoding: "base64",
           });
-          return { path: filePath, mode: "100644", type: "blob", sha: blob.sha };
+          return {
+            path: filePath,
+            mode: "100644",
+            type: "blob",
+            sha: blob.sha,
+          };
         }),
       );
 
@@ -112,20 +120,23 @@ async function commitViaGitHubAPI(octokit, message, files, maxRetries = 3) {
   const token = await getInstallationToken(process.env.DEPLOY_SWAN_APP_ID, privateKey);
   const octokit = new Octokit({ auth: token });
 
-  const filePath = `open-frontend/argocd/${process.env.DEPLOY_ENVIRONMENT}/${process.env.DEPLOY_APP_NAME}-values.yaml`;
+  const filePath = `${process.env.DEPLOY_APP_NAME}/argocd/${process.env.DEPLOY_ENVIRONMENT}/Chart.yaml`;
 
   const file = await fetchFile(octokit, filePath);
   if (!file) {
     throw new Error(`File not found: ${filePath}`);
   }
 
-  const updatedContent = file.content.replaceAll(/\btag: .+/g, `tag: ${process.env.TAG}`);
+  const updatedContent = file.content.replaceAll(
+    /\bappVersion: .+/g,
+    `appVersion: ${process.env.TAG}`,
+  );
 
   if (updatedContent === file.content) {
     console.log("No changes to commit");
     return;
   }
 
-  const message = `[Update Deploy Swan] App: ${process.env.DEPLOY_APP_NAME} new tag ${process.env.TAG}, ECR: swan-${process.env.DEPLOY_APP_NAME}`;
+  const message = `[Update Deploy Swan] App: ${process.env.DEPLOY_APP_NAME} new tag ${process.env.TAG}, ECR: ${process.env.DEPLOY_APP_NAME}`;
   await commitViaGitHubAPI(octokit, message, new Map([[filePath, updatedContent]]));
 })();
