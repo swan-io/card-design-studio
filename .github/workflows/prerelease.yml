@@ -57,7 +57,7 @@ jobs:
           context: .
           file: Dockerfile-swan
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           tags: |
             ${{ secrets.DOCKER_REGISTRY }}/card-design-studio:preprod-${{ github.sha }}
             ${{ secrets.DOCKER_REGISTRY }}/card-design-studio:preprod-${{ steps.version.outputs.version }}
