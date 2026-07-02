@@ -86,9 +86,7 @@ const createGhPullRequest = (title: string, body: string) =>
   exec(`gh pr create -t ${quote(title)} -b ${quote(body)}`);
 
 const createGhCompareUrl = (from: string | undefined, to: string) =>
-  `https://github.com/swan-io/swan-partner-frontend/compare/${
-    from != null ? `${from}..${to}` : ""
-  }`;
+  `https://github.com/swan-io/card-design-studio/compare/${from != null ? `${from}..${to}` : ""}`;
 
 (async () => {
   if (await isProgramMissing("git")) {
