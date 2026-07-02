@@ -23,6 +23,7 @@
   "scripts": {
     "prepare": "git config --local core.hooksPath .hooks",
     "format": "prettier '**/*' --ignore-unknown --write",
+    "lint": "eslint . --ext .ts,.tsx --fix",
     "link-locale-lake": "sh scripts/lake/link-locale-lake.sh",
     "unlink-locale-lake": "sh scripts/lake/unlink-locale-lake.sh",
     "typecheck": "tsc --noEmit",
