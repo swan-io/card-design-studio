@@ -37,6 +37,12 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: pnpm build
 
+      # Overwrite package.json version with the commit SHA
+      # This allows to identify the exact code deployed in master
+      - name: Overwrite package.json version
+        if: ${{ github.repository == 'swan-io/swan-partner-frontend' && contains('refs/heads/main', github.ref) }}
+        run: jq --arg v ${GITHUB_SHA:0:7} '.version = $v' server/package.json > package.json.tmp && mv package.json.tmp server/package.json
+
       - name: Configure AWS Credentials
         if: ${{ github.repository == 'swan-io/card-design-studio' && contains('refs/heads/main', github.ref) || contains(github.event.head_commit.message, '[dockerize]')}}
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
