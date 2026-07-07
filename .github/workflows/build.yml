@@ -40,7 +40,6 @@ jobs:
       # Overwrite package.json version with the commit SHA
       # This allows to identify the exact code deployed in master
       - name: Overwrite package.json version
-        if: ${{ github.repository == 'swan-io/swan-partner-frontend' && contains('refs/heads/main', github.ref) }}
         run: jq --arg v ${GITHUB_SHA:0:7} '.version = $v' server/package.json > package.json.tmp && mv package.json.tmp server/package.json
 
       - name: Configure AWS Credentials
