@@ -16,6 +16,10 @@ import {
 } from "./utils/cardConfig";
 import { clientEnv, env } from "./utils/env";
 
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../package.json"), "utf-8"),
+) as { version: string };
+
 const PORT = 8080;
 
 const start = async () => {
@@ -56,8 +60,9 @@ const start = async () => {
   await app.register(sensible);
   await app.register(replyFrom);
 
-  app.get("/health", async (request, reply) => {
-    return reply.header("cache-control", `public, max-age=0`).status(200).send({
+  app.get("/health", async (_request, reply) => {
+    return reply.header("cache-control", "private, max-age=0").status(200).send({
+      version: packageJson.version,
       date: new Date().toISOString(),
     });
   });
