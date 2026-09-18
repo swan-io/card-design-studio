@@ -22,5 +22,6 @@ COPY --chown=node:node --from=builder /app ./
 ENV NODE_ENV=production
 
 EXPOSE 8080
+EXPOSE 9464
 
 CMD ["npm", "start"]
