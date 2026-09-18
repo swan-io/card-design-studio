@@ -1,7 +1,7 @@
 {
   "name": "@swan-io/card-design-studio",
   "description": "Card design studio",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "engines": {
     "node": ">=18.0.0"
