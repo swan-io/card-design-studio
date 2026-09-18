@@ -1,4 +1,4 @@
-import { AsyncData, Option, Result } from "@swan-io/boxed";
+import { AsyncData, Option, Result } from "@bloodyowl/boxed";
 import { Box } from "@swan-io/lake/src/components/Box";
 import { Fill } from "@swan-io/lake/src/components/Fill";
 import { LakeButton } from "@swan-io/lake/src/components/LakeButton";
@@ -8,14 +8,14 @@ import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
 import { Link } from "@swan-io/lake/src/components/Link";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
-import { Slider } from "@swan-io/lake/src/components/Slider";
+import { LakeSlider } from "@swan-io/lake/src/components/LakeSlider";
 import { Space } from "@swan-io/lake/src/components/Space";
 import { SwanLogo } from "@swan-io/lake/src/components/SwanLogo";
 import { Tile } from "@swan-io/lake/src/components/Tile";
 import { TransitionView } from "@swan-io/lake/src/components/TransitionView";
 import { animations, colors } from "@swan-io/lake/src/constants/design";
 import { useResponsive } from "@swan-io/lake/src/hooks/useResponsive";
-import { showToast } from "@swan-io/lake/src/state/toasts";
+import { showToast } from "@swan-io/shared-business/src/state/toasts";
 import { isNullish } from "@swan-io/lake/src/utils/nullish";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -236,13 +236,13 @@ export const LogoStep = ({
       <LakeLabel
         label={t("step.logo.size.label")}
         render={() => (
-          <Slider
+          <LakeSlider
             disabled={isNullish(logo)}
-            minimum={0}
-            maximum={1}
+            min={0}
+            max={1}
             step={0.01}
             value={logoScale}
-            onValueChange={onLogoScaleChange}
+            onChange={onLogoScaleChange}
           />
         )}
       />
@@ -353,7 +353,7 @@ export const ColorStep = ({
 
         <Space height={4} />
 
-        <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="_blank" style={styles.link}>
+        <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="blank" style={styles.link}>
           <LakeText color={colors.live[500]}>{t("step.color.moreAboutCustom")}</LakeText>
         </Link>
 

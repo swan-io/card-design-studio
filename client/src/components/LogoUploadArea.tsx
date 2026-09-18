@@ -1,9 +1,9 @@
-import { AsyncData } from "@swan-io/boxed";
+import { AsyncData } from "@bloodyowl/boxed";
 import { LakeLabel } from "@swan-io/lake/src/components/LakeLabel";
 import { LakeText } from "@swan-io/lake/src/components/LakeText";
 import { Link } from "@swan-io/lake/src/components/Link";
 import { colors } from "@swan-io/lake/src/constants/design";
-import { UploadArea } from "@swan-io/shared-business/src/components/UploadArea";
+import { UploadArea } from "./UploadArea";
 import { useState } from "react";
 import { match } from "ts-pattern";
 import { t } from "../utils/i18n";
@@ -90,7 +90,7 @@ export const LogoUploadArea = ({ logoFile, onChange }: Props) => {
 
           <Space width={4} />
 
-          <Link to="https://docs.swan.io/help/faq/cards" target="_blank" style={styles.link}>
+          <Link to="https://docs.swan.io/help/faq/cards" target="blank" style={styles.link}>
             <LakeText color={colors.live[500]}>{t("step.logo.helpLink")}</LakeText>
           </Link>
         </LakeText>

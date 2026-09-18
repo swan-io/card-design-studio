@@ -1,4 +1,4 @@
-import { AsyncData, Result } from "@swan-io/boxed";
+import { AsyncData, Result } from "@bloodyowl/boxed";
 import { useEffect, useState } from "react";
 import { P, match } from "ts-pattern";
 import { Except } from "type-fest";

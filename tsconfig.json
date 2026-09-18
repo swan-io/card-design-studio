@@ -7,6 +7,12 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
+    // @react-three/fiber pulls in react-native 0.86 (which ships its own types), while the
+    // app and lake both type "react-native" through @types/react-native. Pin the resolution
+    // so lake's declarations and ours share a single ViewStyle.
+    "paths": {
+      "react-native": ["./client/node_modules/@types/react-native"]
+    },
 
     "allowJs": false,
     "strict": true,

@@ -1,20 +1,20 @@
 import { Environment, OrbitControls, useTexture } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import envNx from "@swan-io/lake/src/assets/3d-card/environment/nx.png?url";
-import envNy from "@swan-io/lake/src/assets/3d-card/environment/ny.png?url";
-import envNz from "@swan-io/lake/src/assets/3d-card/environment/nz.png?url";
-import envPx from "@swan-io/lake/src/assets/3d-card/environment/px.png?url";
-import envPy from "@swan-io/lake/src/assets/3d-card/environment/py.png?url";
-import envPz from "@swan-io/lake/src/assets/3d-card/environment/pz.png?url";
-import fontMaisonNeueBook from "@swan-io/lake/src/assets/3d-card/model/MaisonNeue-Book.woff?url";
-import fontMarkProRegular from "@swan-io/lake/src/assets/3d-card/model/MarkPro-Regular.ttf?url";
-import bandRoughness from "@swan-io/lake/src/assets/3d-card/model/band_roughness.jpg?url";
-import cardGltf from "@swan-io/lake/src/assets/3d-card/model/card.gltf?url";
-import chipTexture from "@swan-io/lake/src/assets/3d-card/model/chip.jpg?url";
-import colorBlack from "@swan-io/lake/src/assets/3d-card/model/color_black.jpg?url";
-import colorSilver from "@swan-io/lake/src/assets/3d-card/model/color_silver.jpg?url";
-import type { Card3dAssetsUrls } from "@swan-io/lake/src/components/Card3dPreview";
-import { Card } from "@swan-io/lake/src/components/Card3dPreview";
+import envNx from "../assets/3d-card/environment/nx.png?url";
+import envNy from "../assets/3d-card/environment/ny.png?url";
+import envNz from "../assets/3d-card/environment/nz.png?url";
+import envPx from "../assets/3d-card/environment/px.png?url";
+import envPy from "../assets/3d-card/environment/py.png?url";
+import envPz from "../assets/3d-card/environment/pz.png?url";
+import fontMaisonNeueBook from "../assets/3d-card/model/MaisonNeue-Book.woff?url";
+import fontMarkProRegular from "../assets/3d-card/model/MarkPro-Regular.ttf?url";
+import bandRoughness from "../assets/3d-card/model/band_roughness.jpg?url";
+import cardGltf from "../assets/3d-card/model/card.gltf?url";
+import chipTexture from "../assets/3d-card/model/chip.jpg?url";
+import colorBlack from "../assets/3d-card/model/color_black.jpg?url";
+import colorSilver from "../assets/3d-card/model/color_silver.jpg?url";
+import type { Card3dAssetsUrls } from "./Card3dPreview";
+import { Card } from "./Card3dPreview";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Euler, Vector3 } from "three";
@@ -137,9 +137,9 @@ const CardScene = ({ step, ownerName, color, logo, logoScale }: Props) => {
   const [orbitEnabled, setOrbitEnabled] = useState(() => step === "share");
   const customTexture = useTexture(customColorUrl, setTextureColorSpace);
 
-  const cameraPositionAnimation = useRef<Animation<Vector3>>();
+  const cameraPositionAnimation = useRef<Animation<Vector3> | undefined>(undefined);
   // animate card rotation instead of camera to be able to use orbitControls and rotation animation at the same time
-  const cardRotationAnimation = useRef<Animation<Euler>>();
+  const cardRotationAnimation = useRef<Animation<Euler> | undefined>(undefined);
 
   useEffect(() => {
     cameraPositionAnimation.current = animate(camera.position);

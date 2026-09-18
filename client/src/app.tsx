@@ -1,5 +1,5 @@
 import { LoadingView } from "@swan-io/lake/src/components/LoadingView";
-import { ToastStack } from "@swan-io/lake/src/components/ToastStack";
+import { ToastStack } from "@swan-io/shared-business/src/components/ToastStack";
 import { Suspense, lazy, useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { P, match } from "ts-pattern";
@@ -12,7 +12,7 @@ import {
 } from "./components/ConfigSteps";
 import { ShareOverlay } from "./components/ShareOverlay";
 import { Router } from "./utils/routes";
-import { AsyncData } from "@swan-io/boxed";
+import { AsyncData } from "@bloodyowl/boxed";
 import { isNotNullish } from "@swan-io/lake/src/utils/nullish";
 import { createYourBrandSvg } from "./utils/svg";
 import { LoadConfigOverlay } from "./components/LoadConfigOverlay";

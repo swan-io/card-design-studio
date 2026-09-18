@@ -1,0 +1,13 @@
+diff --git a/src/components/LakeSelect.js b/src/components/LakeSelect.js
+index dec0afeedb6920a0fc0b9b09f9eafe104de1fc72..8bffd40e21cae0ba0b0bd415ccc4196b80aad550 100644
+--- a/src/components/LakeSelect.js
++++ b/src/components/LakeSelect.js
+@@ -1,7 +1,7 @@
+ import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+ import { useCallback, useEffect, useMemo, useRef, useState, } from "react";
+ import { StyleSheet, Text, TextInput, View, } from "react-native";
+-import { t } from "../../../shared-business/src/utils/i18n";
++import { t } from "@swan-io/shared-business/src/utils/i18n";
+ import { commonStyles } from "../constants/commonStyles";
+ import { backgroundColor, colors, invariantColors, radii, shadows, spacings, texts, } from "../constants/design";
+ import { useBoolean } from "../hooks/useBoolean";

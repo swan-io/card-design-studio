@@ -35,5 +35,7 @@
   "shareModal.title": "Share your branded card with your team!",
   "shareModal.link": "Your card design link",
   "shareModal.shareOnX": "Share on X",
-  "shareModal.shareOnLinkedIn": "Share on LinkedIn"
+  "shareModal.shareOnLinkedIn": "Share on LinkedIn",
+  "uploadArea.dropFile": "Drop your file here or ",
+  "uploadArea.browse": "browse"
 }

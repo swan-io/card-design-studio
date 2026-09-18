@@ -56,7 +56,7 @@ export const ShareModal = ({ visible, configId, onPressClose }: Props) => {
 
       <Space height={16} />
 
-      <Link to={linkedInUrl} target="_blank" style={styles.link}>
+      <Link to={linkedInUrl} target="blank" style={styles.link}>
         <Image source={{ uri: linkedInIconUrl }} style={styles.logo} alt="LinkedIn" />
         <Space width={4} />
         <LakeText color={colors.live[500]}>{t("shareModal.shareOnLinkedIn")}</LakeText>
@@ -66,7 +66,7 @@ export const ShareModal = ({ visible, configId, onPressClose }: Props) => {
 
       <Space height={16} />
 
-      <Link to={xUrl} target="_blank" style={styles.link}>
+      <Link to={xUrl} target="blank" style={styles.link}>
         <Image source={{ uri: xIconUrl }} style={styles.logo} alt="X" />
         <Space width={4} />
         <LakeText color={colors.live[500]}>{t("shareModal.shareOnX")}</LakeText>

@@ -8,14 +8,14 @@ import { LakeTextInput } from "@swan-io/lake/src/components/LakeTextInput";
 import { Link } from "@swan-io/lake/src/components/Link";
 import { RadioGroup, RadioGroupItem } from "@swan-io/lake/src/components/RadioGroup";
 import { RightPanel } from "@swan-io/lake/src/components/RightPanel";
-import { Slider } from "@swan-io/lake/src/components/Slider";
+import { LakeSlider } from "@swan-io/lake/src/components/LakeSlider";
 import { Space } from "@swan-io/lake/src/components/Space";
 import { colors } from "@swan-io/lake/src/constants/design";
 import { ScrollView, StyleSheet } from "react-native";
 import { t } from "../utils/i18n";
 import { LogoUploadArea } from "./LogoUploadArea";
 import { TrackPressable } from "./TrackPressable";
-import { AsyncData } from "@swan-io/boxed";
+import { AsyncData } from "@bloodyowl/boxed";
 
 const styles = StyleSheet.create({
   container: {
@@ -96,13 +96,7 @@ export const ConfigRightPanel = ({
       <LakeLabel
         label={t("step.logo.size.label")}
         render={() => (
-          <Slider
-            minimum={0}
-            maximum={1}
-            step={0.01}
-            value={logoScale}
-            onValueChange={onLogoScaleChange}
-          />
+          <LakeSlider min={0} max={1} step={0.01} value={logoScale} onChange={onLogoScaleChange} />
         )}
       />
 
@@ -116,7 +110,7 @@ export const ConfigRightPanel = ({
 
       <Space height={4} />
 
-      <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="_blank" style={styles.link}>
+      <Link to={CUSTOM_LINK_DOCUMENTATION_URL} target="blank" style={styles.link}>
         <LakeText color={colors.live[500]}>{t("step.color.moreAboutCustom")}</LakeText>
       </Link>
 

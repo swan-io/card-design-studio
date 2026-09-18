@@ -269,10 +269,25 @@ export const createYourBrandSvg = (): SVGElement => {
 
 export const createSvgImage = (svg: SVGElement): HTMLImageElement => {
   const svgSize = getSvgSize(svg);
-  const base64Uri = convertSvgToBase64Uri(svg);
-  const { width, height } = getImageSize(svgSize);
+  const { width: targetWidth, height: targetHeight } = getImageSize(svgSize);
+  const width = Math.round(targetWidth);
+  const height = Math.round(targetHeight);
+
+  // Rasterize at the target size by setting it on the SVG itself, so the decoded bitmap
+  // matches the <img> width/height. three.js uploads textures with texStorage2D using the
+  // element's dimensions, and a mismatch against the decoded bitmap makes the upload fail
+  // outright — leaving the logo plane an unmasked solid rectangle.
+  const scaled = svg.cloneNode(true) as SVGElement;
+
+  if (scaled.getAttribute("viewBox") == null) {
+    scaled.setAttribute("viewBox", `0 0 ${svgSize.width} ${svgSize.height}`);
+  }
+
+  scaled.setAttribute("width", String(width));
+  scaled.setAttribute("height", String(height));
+
   const image = new Image(width, height);
-  image.src = base64Uri;
+  image.src = convertSvgToBase64Uri(scaled);
 
   return image;
 };
