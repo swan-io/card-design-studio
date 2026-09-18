@@ -1,3 +1,5 @@
+import "./tracing";
+
 import replyFrom from "@fastify/reply-from";
 import multipart from "@fastify/multipart";
 import sensible from "@fastify/sensible";

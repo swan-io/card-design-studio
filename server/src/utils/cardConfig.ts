@@ -1,6 +1,6 @@
 import { S3 } from "@aws-sdk/client-s3";
 import type { MultipartFile } from "@fastify/multipart";
-import { Option } from "@swan-io/boxed";
+import { Option } from "@bloodyowl/boxed";
 import deburr from "lodash/deburr";
 import snakeCase from "lodash/snakeCase";
 import { Browser, chromium } from "playwright";

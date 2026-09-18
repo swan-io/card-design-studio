@@ -1,5 +1,5 @@
 import { BusboyFileStream } from "@fastify/busboy";
-import { Result } from "@swan-io/boxed";
+import { Result } from "@bloodyowl/boxed";
 import { match } from "ts-pattern";
 
 export const stringifyImage = async (
